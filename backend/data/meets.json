@@ -1,0 +1,33 @@
+{
+  "nextId": 5,
+  "rows": [
+    {
+      "id": 1,
+      "name": "Fall Invitational",
+      "location": "Westside Aquatic Center",
+      "date": "2026-09-13",
+      "entryDeadline": "2026-09-05"
+    },
+    {
+      "id": 2,
+      "name": "Age Group Championship",
+      "location": "THPRD Aquatic Center",
+      "date": "2026-09-27",
+      "entryDeadline": "2026-09-19"
+    },
+    {
+      "id": 3,
+      "name": "October Relay Carnival",
+      "location": "Sunset Swim Club",
+      "date": "2026-10-11",
+      "entryDeadline": "2026-10-03"
+    },
+    {
+      "id": 4,
+      "name": "Winter Kickoff Meet",
+      "location": "THPRD Aquatic Center",
+      "date": "2026-11-08",
+      "entryDeadline": "2026-10-31"
+    }
+  ]
+}

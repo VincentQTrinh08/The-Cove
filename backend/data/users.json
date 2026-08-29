@@ -1,0 +1,35 @@
+{
+  "nextId": 6,
+  "rows": [
+    {
+      "id": 1,
+      "name": "Coach Dana",
+      "role": "coach",
+      "group": null
+    },
+    {
+      "id": 2,
+      "name": "Maya R.",
+      "role": "swimmer",
+      "group": "Senior"
+    },
+    {
+      "id": 3,
+      "name": "Jordan T.",
+      "role": "swimmer",
+      "group": "Senior"
+    },
+    {
+      "id": 4,
+      "name": "Sam P.",
+      "role": "swimmer",
+      "group": "Age Group"
+    },
+    {
+      "id": 5,
+      "name": "Maya's Parent",
+      "role": "parent",
+      "group": null
+    }
+  ]
+}

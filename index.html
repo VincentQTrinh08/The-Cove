@@ -1515,6 +1515,166 @@ textarea:focus-visible {
   .week-log__edit-btn span, .week-log__edit-btn { font-size: 13px; }
 }
 
+/* ==== Team Roster (coach only) ==== */
+.roster { max-width: 1180px; }
+.roster__head { margin-bottom: 6px; }
+.roster__head h2 { font-size: 30px; }
+.roster__sub { color: var(--ink-soft); font-size: 15.5px; margin: 6px 0 0; max-width: 62ch; }
+
+.roster__banner {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.roster__banner.is-error { background: var(--critical-tint); color: var(--critical); }
+.roster__banner.is-ok { background: var(--good-tint); color: var(--good); }
+
+.roster__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+@media (max-width: 900px) {
+  .roster__grid { grid-template-columns: 1fr; }
+}
+
+.roster__panel {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+.roster__panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.roster__panel-head h3 { font-size: 17px; margin: 0; color: var(--primary-strong); }
+.roster__count {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: var(--primary-tint);
+  border-radius: 20px;
+  padding: 2px 9px;
+}
+
+.roster-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.roster-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  gap: 5px;
+}
+.roster-form input[type="text"] {
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-family: inherit;
+  font-size: 14.5px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.roster-form__swimmers { border: none; padding: 0; margin: 0; }
+.roster-form__swimmers legend {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  padding: 0 0 5px;
+}
+.roster-form__checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.roster-form__checks label {
+  flex-direction: row;
+  align-items: center;
+  text-transform: none;
+  font-weight: 500;
+  font-size: 13.5px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 5px 11px 5px 8px;
+  cursor: pointer;
+}
+.roster-form__checks input { margin: 0; }
+.roster-form__checks-empty { font-size: 13px; color: var(--ink-soft); }
+.roster-form__add {
+  align-self: flex-start;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 9px 16px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.roster-form__add:hover { background: var(--primary-strong); }
+
+.roster-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.roster-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 4px;
+  border-bottom: 1px solid var(--line);
+}
+.roster-row:last-child { border-bottom: none; }
+.roster-row__info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.roster-row__name { font-weight: 700; font-size: 14.5px; color: var(--ink); }
+.roster-row__meta { font-size: 12.5px; color: var(--ink-soft); }
+.roster-row__actions { display: flex; gap: 6px; flex: none; }
+.roster-row__actions button {
+  border: 1.5px solid var(--line);
+  background: var(--paper-raised);
+  color: var(--ink-soft);
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.roster-row__actions button:hover { border-color: var(--primary); color: var(--primary-strong); }
+.roster-row__actions button.roster-row__delete:hover { border-color: var(--critical); color: var(--critical); }
+.roster-list__empty { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+
+.roster-edit-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; flex: 1; }
+.roster-edit-row input {
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13.5px;
+  font-family: inherit;
+  background: var(--paper);
+  color: var(--ink);
+  min-width: 0;
+  flex: 1 1 100px;
+}
+
 </style>
 </head>
 <body>
@@ -1568,6 +1728,10 @@ textarea:focus-visible {
       <button type="button" data-view="away-workouts" onclick="setView('away-workouts')">
         <svg viewBox="0 0 24 24" fill="none"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3V7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Away Workouts
+      </button>
+      <button type="button" data-view="roster" data-coach-only onclick="setView('roster')" hidden>
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="18" cy="8.5" r="2.4" stroke="currentColor" stroke-width="2"/><path d="M15.5 14.3c2.6.4 4.5 2.6 4.5 5.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Team Roster
       </button>
     </nav>
 
@@ -1761,17 +1925,77 @@ textarea:focus-visible {
   <p class="away-workouts__empty" id="awayWorkoutsEmpty" hidden>No workouts in this category yet.</p>
 </section>
     </section>
+
+    <section class="view" id="view-roster">
+<section class="roster" aria-labelledby="rosterHeading">
+  <header class="roster__head">
+    <div>
+      <h2 id="rosterHeading">Team Roster</h2>
+      <p class="roster__sub">Add the athletes on your team and the parents who should be able to follow along. This saves to the team's shared roster, not just this device.</p>
+    </div>
+  </header>
+
+  <p class="roster__banner" id="rosterBanner" hidden></p>
+
+  <div class="roster__grid">
+    <div class="roster__panel">
+      <div class="roster__panel-head">
+        <h3>Athletes</h3>
+        <span class="roster__count" id="rosterSwimmerCount">0</span>
+      </div>
+
+      <form class="roster-form" id="rosterSwimmerForm">
+        <label>Name<input type="text" id="rosterSwimmerName" placeholder="e.g. Maya R." required></label>
+        <label>Group<input type="text" id="rosterSwimmerGroup" placeholder="e.g. Senior, Age Group" list="rosterGroupOptions"></label>
+        <datalist id="rosterGroupOptions">
+          <option value="Age Group"></option>
+          <option value="Senior"></option>
+        </datalist>
+        <button type="submit" class="roster-form__add">Add athlete</button>
+      </form>
+
+      <ul class="roster-list" id="rosterSwimmerList" aria-live="polite"></ul>
+      <p class="roster-list__empty" id="rosterSwimmerEmpty" hidden>No athletes added yet.</p>
+    </div>
+
+    <div class="roster__panel">
+      <div class="roster__panel-head">
+        <h3>Parents</h3>
+        <span class="roster__count" id="rosterParentCount">0</span>
+      </div>
+
+      <form class="roster-form" id="rosterParentForm">
+        <label>Name<input type="text" id="rosterParentName" placeholder="e.g. Dana R." required></label>
+        <fieldset class="roster-form__swimmers">
+          <legend>Linked athlete(s)</legend>
+          <div id="rosterParentSwimmerChecks" class="roster-form__checks"></div>
+        </fieldset>
+        <button type="submit" class="roster-form__add">Add parent</button>
+      </form>
+
+      <ul class="roster-list" id="rosterParentList" aria-live="polite"></ul>
+      <p class="roster-list__empty" id="rosterParentEmpty" hidden>No parents added yet.</p>
+    </div>
+  </div>
+</section>
+    </section>
   </main>
 </div>
 
 <script>
   function setView(id) {
+    if (id === 'roster') {
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem('splash-current-user') || 'null'); } catch (e) { saved = null; }
+      if (!saved || saved.role !== 'coach') id = 'this-week';
+    }
     document.querySelectorAll('.view').forEach(function (el) { el.classList.remove('active'); });
     var target = document.getElementById('view-' + id);
     if (target) target.classList.add('active');
     document.querySelectorAll('#primaryNav button').forEach(function (btn) {
       btn.classList.toggle('active', btn.getAttribute('data-view') === id);
     });
+    if (id === 'roster') document.dispatchEvent(new CustomEvent('splash:roster-view'));
   }
 </script>
 
@@ -3004,6 +3228,231 @@ const AWAY_WORKOUTS = [
 </script>
 
 <script>
+/* Splash component: Team Roster (coach only)
+   Unlike the other tabs (still localStorage-only, see their
+   TODO(sync) notes), this one talks to the real splash-backend
+   directly — a roster only means something if every coach/parent
+   device sees the same list, so there's no reasonable per-device
+   version of this feature. Requires the backend running locally
+   (see backend/README.md): node server.js, listening on API_BASE.
+*/
+(function () {
+  var API_BASE = 'http://localhost:3001';
+
+  var banner = document.getElementById('rosterBanner');
+  var swimmerForm = document.getElementById('rosterSwimmerForm');
+  var swimmerNameInput = document.getElementById('rosterSwimmerName');
+  var swimmerGroupInput = document.getElementById('rosterSwimmerGroup');
+  var swimmerList = document.getElementById('rosterSwimmerList');
+  var swimmerEmpty = document.getElementById('rosterSwimmerEmpty');
+  var swimmerCount = document.getElementById('rosterSwimmerCount');
+
+  var parentForm = document.getElementById('rosterParentForm');
+  var parentNameInput = document.getElementById('rosterParentName');
+  var parentChecks = document.getElementById('rosterParentSwimmerChecks');
+  var parentList = document.getElementById('rosterParentList');
+  var parentEmpty = document.getElementById('rosterParentEmpty');
+  var parentCount = document.getElementById('rosterParentCount');
+
+  var swimmers = [];
+  var parents = [];
+  var parentLinks = [];
+  var loaded = false;
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function showBanner(message, kind) {
+    if (!message) { banner.hidden = true; return; }
+    banner.textContent = message;
+    banner.className = 'roster__banner ' + (kind === 'ok' ? 'is-ok' : 'is-error');
+    banner.hidden = false;
+  }
+
+  function api(path, options) {
+    return fetch(API_BASE + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options))
+      .then(function (res) {
+        if (!res.ok) return res.json().catch(function () { return {}; }).then(function (body) {
+          throw new Error(body.error || ('Request failed (' + res.status + ')'));
+        });
+        if (res.status === 204) return null;
+        return res.json();
+      });
+  }
+
+  function swimmersFor(parentId) {
+    return parentLinks
+      .filter(function (l) { return l.parentId === parentId; })
+      .map(function (l) { return swimmers.find(function (s) { return s.id === l.swimmerId; }); })
+      .filter(Boolean);
+  }
+
+  function renderSwimmerChecks() {
+    if (!swimmers.length) {
+      parentChecks.innerHTML = '<span class="roster-form__checks-empty">Add an athlete first to link a parent to them.</span>';
+      return;
+    }
+    parentChecks.innerHTML = swimmers.map(function (s) {
+      return '<label><input type="checkbox" value="' + s.id + '"> ' + escapeHtml(s.name) + '</label>';
+    }).join('');
+  }
+
+  function renderSwimmerList() {
+    swimmerCount.textContent = swimmers.length;
+    swimmerEmpty.hidden = swimmers.length > 0;
+    swimmerList.innerHTML = swimmers.map(function (s) {
+      return (
+        '<li class="roster-row" data-id="' + s.id + '">' +
+          '<div class="roster-row__info">' +
+            '<span class="roster-row__name">' + escapeHtml(s.name) + '</span>' +
+            '<span class="roster-row__meta">' + (s.group ? escapeHtml(s.group) : 'No group set') + '</span>' +
+          '</div>' +
+          '<div class="roster-row__actions">' +
+            '<button type="button" class="roster-row__edit" data-action="edit-swimmer">Edit</button>' +
+            '<button type="button" class="roster-row__delete" data-action="delete-swimmer">Remove</button>' +
+          '</div>' +
+        '</li>'
+      );
+    }).join('');
+  }
+
+  function renderParentList() {
+    parentCount.textContent = parents.length;
+    parentEmpty.hidden = parents.length > 0;
+    parentList.innerHTML = parents.map(function (p) {
+      var kids = swimmersFor(p.id);
+      var kidsLabel = kids.length ? kids.map(function (k) { return k.name; }).join(', ') : 'No athletes linked';
+      return (
+        '<li class="roster-row" data-id="' + p.id + '">' +
+          '<div class="roster-row__info">' +
+            '<span class="roster-row__name">' + escapeHtml(p.name) + '</span>' +
+            '<span class="roster-row__meta">' + escapeHtml(kidsLabel) + '</span>' +
+          '</div>' +
+          '<div class="roster-row__actions">' +
+            '<button type="button" class="roster-row__delete" data-action="delete-parent">Remove</button>' +
+          '</div>' +
+        '</li>'
+      );
+    }).join('');
+  }
+
+  function renderAll() {
+    renderSwimmerChecks();
+    renderSwimmerList();
+    renderParentList();
+  }
+
+  function loadRoster() {
+    showBanner(null);
+    Promise.all([
+      api('/api/users?role=swimmer'),
+      api('/api/users?role=parent'),
+      api('/api/parent-links')
+    ]).then(function (results) {
+      swimmers = results[0];
+      parents = results[1];
+      parentLinks = results[2];
+      loaded = true;
+      renderAll();
+    }).catch(function (err) {
+      showBanner("Couldn't reach the Splash backend (" + err.message + "). Make sure it's running: see backend/README.md.", 'error');
+    });
+  }
+
+  swimmerForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = swimmerNameInput.value.trim();
+    if (!name) return;
+    api('/api/users', {
+      method: 'POST',
+      body: JSON.stringify({ name: name, role: 'swimmer', group: swimmerGroupInput.value.trim() || null })
+    }).then(function () {
+      swimmerForm.reset();
+      showBanner('Athlete added.', 'ok');
+      loadRoster();
+    }).catch(function (err) { showBanner(err.message, 'error'); });
+  });
+
+  parentForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = parentNameInput.value.trim();
+    if (!name) return;
+    var swimmerIds = Array.prototype.slice.call(parentChecks.querySelectorAll('input:checked')).map(function (cb) {
+      return Number(cb.value);
+    });
+    api('/api/users', {
+      method: 'POST',
+      body: JSON.stringify({ name: name, role: 'parent', swimmerIds: swimmerIds })
+    }).then(function () {
+      parentForm.reset();
+      showBanner('Parent added.', 'ok');
+      loadRoster();
+    }).catch(function (err) { showBanner(err.message, 'error'); });
+  });
+
+  swimmerList.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var row = btn.closest('.roster-row');
+    var id = Number(row.getAttribute('data-id'));
+    var swimmer = swimmers.find(function (s) { return s.id === id; });
+
+    if (btn.dataset.action === 'delete-swimmer') {
+      if (!confirm('Remove ' + swimmer.name + ' from the roster? This also removes any parent links to them.')) return;
+      api('/api/users/' + id, { method: 'DELETE' }).then(function () {
+        showBanner('Athlete removed.', 'ok');
+        loadRoster();
+      }).catch(function (err) { showBanner(err.message, 'error'); });
+    }
+
+    if (btn.dataset.action === 'edit-swimmer') {
+      row.querySelector('.roster-row__info').innerHTML =
+        '<div class="roster-edit-row">' +
+          '<input type="text" class="roster-edit-name" value="' + escapeHtml(swimmer.name) + '">' +
+          '<input type="text" class="roster-edit-group" value="' + escapeHtml(swimmer.group || '') + '" placeholder="Group">' +
+        '</div>';
+      row.querySelector('.roster-row__actions').innerHTML =
+        '<button type="button" data-action="save-swimmer">Save</button>' +
+        '<button type="button" data-action="cancel-swimmer">Cancel</button>';
+    }
+
+    if (btn.dataset.action === 'cancel-swimmer') renderSwimmerList();
+
+    if (btn.dataset.action === 'save-swimmer') {
+      var name = row.querySelector('.roster-edit-name').value.trim();
+      var group = row.querySelector('.roster-edit-group').value.trim();
+      if (!name) return;
+      api('/api/users/' + id, { method: 'PATCH', body: JSON.stringify({ name: name, group: group || null }) })
+        .then(function () {
+          showBanner('Athlete updated.', 'ok');
+          loadRoster();
+        }).catch(function (err) { showBanner(err.message, 'error'); });
+    }
+  });
+
+  parentList.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn || btn.dataset.action !== 'delete-parent') return;
+    var row = btn.closest('.roster-row');
+    var id = Number(row.getAttribute('data-id'));
+    var parent = parents.find(function (p) { return p.id === id; });
+    if (!confirm('Remove ' + parent.name + ' from the roster?')) return;
+    api('/api/users/' + id, { method: 'DELETE' }).then(function () {
+      showBanner('Parent removed.', 'ok');
+      loadRoster();
+    }).catch(function (err) { showBanner(err.message, 'error'); });
+  });
+
+  document.addEventListener('splash:roster-view', function () {
+    loadRoster();
+  });
+})();
+</script>
+
+<script>
 /* Splash: sign-in (prototype)
    No real backend auth yet — this just remembers a name + role in
    localStorage on this device so the rest of the app has a "current
@@ -3038,6 +3487,10 @@ const AWAY_WORKOUTS = [
     appRoot.hidden = false;
     document.getElementById('accountChipName').textContent = user.name;
     document.getElementById('accountChipRole').textContent = labelForRole(user.role);
+    document.querySelectorAll('[data-coach-only]').forEach(function (el) {
+      el.hidden = user.role !== 'coach';
+    });
+    document.dispatchEvent(new CustomEvent('splash:user-ready', { detail: user }));
   }
 
   window.handleSignIn = function () {
