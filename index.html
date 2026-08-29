@@ -1691,6 +1691,12 @@ textarea:focus-visible {
   }
   .signin-field input:focus { outline: none; border-color: var(--primary); }
   .signin-roles { display: flex; gap: 8px; margin-bottom: 22px; }
+  .signin-remember {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13.5px; color: #5b7185; font-weight: 500;
+    margin-bottom: 16px; cursor: pointer; text-align: left;
+  }
+  .signin-remember input { margin: 0; width: 15px; height: 15px; flex: none; cursor: pointer; }
   .signin-role {
     flex: 1; padding: 10px 6px; border: 1.5px solid #d3dde5; border-radius: 8px;
     background: #fff; font-family: inherit; font-size: 13.5px; font-weight: 600;
@@ -2285,11 +2291,11 @@ textarea:focus-visible {
     <div class="signin-field-row">
       <div class="signin-field">
         <label for="coveFirstName">First name</label>
-        <input type="text" id="coveFirstName" placeholder="e.g. Maya" autocomplete="given-name" value="Vincent">
+        <input type="text" id="coveFirstName" placeholder="e.g. Maya" autocomplete="given-name">
       </div>
       <div class="signin-field">
         <label for="coveLastName">Last name</label>
-        <input type="text" id="coveLastName" placeholder="e.g. R." autocomplete="family-name" value="Trinh">
+        <input type="text" id="coveLastName" placeholder="e.g. R." autocomplete="family-name">
       </div>
     </div>
     <div class="signin-roles" id="coveRoles">
@@ -2297,6 +2303,10 @@ textarea:focus-visible {
       <button type="button" class="signin-role" data-role="parent" onclick="pickRole('parent')">Parent</button>
       <button type="button" class="signin-role" data-role="coach" onclick="pickRole('coach')">Coach</button>
     </div>
+    <label class="signin-remember">
+      <input type="checkbox" id="coveRemember" checked>
+      Remember me on this device
+    </label>
     <button type="button" class="signin-submit" onclick="handleSignIn()">Continue</button>
   </div>
 </div>
@@ -5069,6 +5079,7 @@ const AWAY_WORKOUTS = [
   var appRoot = document.getElementById('appRoot');
   var firstNameInput = document.getElementById('coveFirstName');
   var lastNameInput = document.getElementById('coveLastName');
+  var rememberInput = document.getElementById('coveRemember');
   var errorEl = document.getElementById('coveError');
   var roleButtons = document.querySelectorAll('.signin-role');
 
@@ -5127,7 +5138,7 @@ const AWAY_WORKOUTS = [
       return;
     }
     errorEl.style.display = 'none';
-    var user = { name: firstName + ' ' + lastName, role: selectedRole };
+    var user = { name: firstName + ' ' + lastName, role: selectedRole, remember: rememberInput.checked };
 
     if (selectedRole === 'swimmer') {
       resolveSwimmerId(user.name).then(function (id) {
@@ -5145,8 +5156,8 @@ const AWAY_WORKOUTS = [
     localStorage.removeItem(STORAGE_KEY);
     appRoot.hidden = true;
     coveScreen.style.display = 'flex';
-    firstNameInput.value = 'Vincent';
-    lastNameInput.value = 'Trinh';
+    firstNameInput.value = '';
+    lastNameInput.value = '';
     errorEl.style.display = 'none';
   };
 
@@ -5154,6 +5165,21 @@ const AWAY_WORKOUTS = [
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') window.handleSignIn();
     });
+  });
+
+  // "Remember me" opt-out: sign-in always writes to localStorage (so
+  // everything on the page keeps reading from the same place it
+  // always has), but if the box wasn't checked, wipe that entry the
+  // moment this tab/browser actually closes or navigates away — so
+  // next time they open the app, they land back on The Cove instead
+  // of being auto-signed-in. Doesn't fire on setView()'s in-page tab
+  // switches, only on a real close/navigate/refresh.
+  window.addEventListener('pagehide', function () {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) { saved = null; }
+    if (saved && saved.remember === false) {
+      localStorage.removeItem(STORAGE_KEY);
+    }
   });
 
   var saved = null;
