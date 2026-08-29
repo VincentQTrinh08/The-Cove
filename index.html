@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Splash Team Hub</title>
 <style>
 /* ============================================================
@@ -1459,7 +1464,61 @@ textarea:focus-visible {
   }
   .account-chip__signout:hover { color: #fff; }
 
+/* ==== Mobile / phone-size optimization ==== */
+@media (max-width: 700px) {
+  main { padding: 18px 16px 48px; max-width: 100%; }
+
+  header.page-head h1 { font-size: 26px; }
+  header.page-head p { font-size: 14.5px; }
+
+  .brand-name { font-size: 20px; }
+  .brand-mark { width: 32px; height: 32px; }
+
+  nav.primary-nav { gap: 4px; }
+  nav.primary-nav button {
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .account-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 4px;
+    margin-left: auto;
+  }
+  .account-chip__role { display: none; }
+
+  /* Section headings scale down so they don't dominate a small screen */
+  .week-log__head h2, .meets__head h2, .stroke-library__head h2, .away-workouts__head h2 {
+    font-size: 24px;
+  }
+
+  .week-log__stats, .stroke-library__filters { gap: 8px; }
+  .week-stat { min-width: 0; flex: 1 1 130px; padding: 9px 12px; }
+  .week-stat__num { font-size: 21px; }
+
+  .stroke-library__grid { grid-template-columns: 1fr; }
+  .meets-photos__grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+
+  .week-day { padding: 12px 14px; }
+  .week-day__log input { width: 70px; }
+
+  .signin-card { padding: 28px 22px; }
+}
+
+@media (max-width: 420px) {
+  .brand-sub { display: none; }
+  nav.primary-nav button { font-size: 13px; padding: 9px 10px; }
+  .week-log__edit-btn span, .week-log__edit-btn { font-size: 13px; }
+}
+
 </style>
+</head>
+<body>
+
 
 <div class="signin-screen" id="signinScreen">
   <div class="signin-card">
@@ -3014,3 +3073,6 @@ const AWAY_WORKOUTS = [
   }
 })();
 </script>
+
+</body>
+</html>
