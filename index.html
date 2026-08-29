@@ -938,7 +938,7 @@ textarea:focus-visible {
   color: var(--ink-soft);
   padding: 10px 18px;
 }
-.week-team__name { flex: 1; min-width: 0; font-weight: 700; color: var(--ink); }
+.week-team__name { flex: 1; min-width: 0; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 2px; }
 .week-team__row.is-head .week-team__name { font-weight: 700; }
 .week-team__day { width: 110px; flex: none; font-family: var(--font-mono); font-size: 13.5px; color: var(--ink-soft); }
 .week-team__day.is-logged { color: var(--good); font-weight: 600; }
@@ -968,6 +968,18 @@ textarea:focus-visible {
   .week-team__row { flex-wrap: wrap; gap: 6px 14px; }
   .week-team__name { flex: 1 1 100%; }
   .week-team__day, .week-team__total { width: auto; }
+
+  /* The header row stays a single compact line even collapsed — it's
+     just short column labels, wrapping it just breaks the layout. */
+  .week-team__row.is-head {
+    flex-wrap: nowrap;
+    gap: 6px;
+    padding: 10px 12px;
+  }
+  .week-team__row.is-head .week-team__name { flex: 1 1 auto; min-width: 0; gap: 0; }
+  .week-team__row.is-head .week-team__day { font-size: 10px; width: auto; }
+  .week-team__row.is-head .week-team__total { font-size: 10px; width: auto; text-align: right; }
+  .week-team__arrow { margin-left: -6px; }
 }
 
 .week-log__stats {
@@ -3224,12 +3236,14 @@ const WEEK_PLAN = [
         }
 
         const head = '<div class="week-team__row is-head">' +
-          '<span class="week-team__name">Swimmer</span>' +
+          '<span class="week-team__name">' +
+            '<button type="button" class="week-team__arrow" id="weekTeamArrow" aria-expanded="' + String(!teamListCollapsed) + '" aria-label="' + (teamListCollapsed ? 'Show every swimmer' : 'Collapse to just the header') + '">' +
+              chevronIcon() +
+            '</button>' +
+            'Swimmer' +
+          '</span>' +
           practiceDays.map((d) => '<span class="week-team__day">' + escapeHtml(d.dow) + '</span>').join('') +
           '<span class="week-team__total">Total</span>' +
-          '<button type="button" class="week-team__arrow" id="weekTeamArrow" aria-expanded="' + String(!teamListCollapsed) + '" aria-label="' + (teamListCollapsed ? 'Show every swimmer' : 'Collapse to just the header') + '">' +
-            chevronIcon() +
-          '</button>' +
         '</div>';
 
         const body = rows.map(({ swimmer, log }) => {
