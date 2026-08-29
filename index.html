@@ -325,7 +325,13 @@ textarea:focus-visible {
     nav.primary-nav button svg { width: 23px; height: 23px; }
     .lane-divider { display: none; }
     .sidebar-foot { display: none; }
-    .account-chip { margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.14); }
+    .account-chip {
+      margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.14);
+      display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+    }
+    .account-chip__role { display: none; }
+    .account-chip__who { font-size: 19px; }
+    .account-chip__signout { font-size: 18px; }
   }
 
 /* ==== Stroke Library ==== */
@@ -755,6 +761,8 @@ textarea:focus-visible {
   max-width: 62ch;
 }
 
+.week-log__head-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+
 .week-log__edit-btn {
   display: inline-flex;
   align-items: center;
@@ -769,6 +777,56 @@ textarea:focus-visible {
   cursor: pointer;
   flex: none;
 }
+
+.week-group-filter { position: relative; }
+.week-group-filter__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--paper-raised);
+  border: 1.5px solid var(--line);
+  color: var(--primary-strong);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.week-group-filter__toggle:hover { border-color: var(--primary); }
+.week-group-filter__toggle svg { width: 16px; height: 16px; flex: none; }
+.week-group-filter__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 200px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.week-group-filter__option {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+.week-group-filter__option span { font-weight: 400; color: var(--ink-soft); font-size: 12.5px; }
+.week-group-filter__option:hover { background: var(--paper); }
+.week-group-filter__option.is-active { background: var(--primary-tint); color: var(--primary-strong); }
+.week-group-filter__option.is-active span { color: var(--primary-strong); opacity: 0.75; }
 .week-log__edit-btn:hover { border-color: var(--primary); }
 .week-log__edit-btn svg { width: 15px; height: 15px; }
 
@@ -847,6 +905,70 @@ textarea:focus-visible {
 .week-edit-cancel { background: transparent; color: var(--ink-soft); }
 .week-edit-save { background: var(--primary); color: #fff; }
 .week-edit-save:hover { background: var(--primary-strong); }
+
+.week-log__banner {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.week-log__banner.is-error { background: var(--critical-tint); color: var(--critical); }
+
+.week-team {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.week-team__row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.week-team__row:last-child { border-bottom: none; }
+.week-team__row.is-head {
+  background: var(--paper);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  padding: 10px 18px;
+}
+.week-team__name { flex: 1; min-width: 0; font-weight: 700; color: var(--ink); }
+.week-team__row.is-head .week-team__name { font-weight: 700; }
+.week-team__day { width: 110px; flex: none; font-family: var(--font-mono); font-size: 13.5px; color: var(--ink-soft); }
+.week-team__day.is-logged { color: var(--good); font-weight: 600; }
+.week-team__day.is-absent { color: var(--critical); }
+.week-team__total { width: 90px; flex: none; text-align: right; font-family: var(--font-mono); font-weight: 700; color: var(--ink); }
+.week-team__empty { padding: 30px 18px; text-align: center; color: var(--ink-soft); font-size: 14px; }
+
+.week-team__arrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-left: -4px;
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.week-team__arrow:hover { background: var(--line); color: var(--ink); }
+.week-team__arrow svg { width: 15px; height: 15px; transition: transform 0.15s ease; }
+.week-team__arrow[aria-expanded="false"] svg { transform: rotate(-90deg); }
+
+@media (max-width: 700px) {
+  .week-team__row { flex-wrap: wrap; gap: 6px 14px; }
+  .week-team__name { flex: 1 1 100%; }
+  .week-team__day, .week-team__total { width: auto; }
+}
 
 .week-log__stats {
   display: flex;
@@ -1591,16 +1713,6 @@ textarea:focus-visible {
 
   .brand-name { font-size: 20px; }
 
-  .account-chip {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 6px 4px;
-    margin-left: auto;
-  }
-  .account-chip__role { display: none; }
-
   /* Section headings scale down so they don't dominate a small screen */
   .week-log__head h2, .meets__head h2, .stroke-library__head h2, .away-workouts__head h2 {
     font-size: 24px;
@@ -2274,12 +2386,25 @@ textarea:focus-visible {
   <header class="week-log__head">
     <div>
       <h2 id="weekLogHeading">This Week</h2>
-      <p class="week-log__sub">What the team is swimming this week, day by day. Log your yardage after practice so your log matches what actually happened.</p>
+      <p class="week-log__sub" id="weekLogSub">What the team is swimming this week, day by day. Log your yardage after practice so your log matches what actually happened.</p>
     </div>
-    <button type="button" class="week-log__edit-btn" id="weekEditToggle" hidden>
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 000-3L17 5a2.1 2.1 0 00-3 0L3.5 15.5V20z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 6.5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      Edit practice
-    </button>
+    <div class="week-log__head-actions">
+      <div class="week-group-filter" id="weekGroupFilter" hidden>
+        <button type="button" class="week-group-filter__toggle" id="weekGroupFilterToggle" aria-haspopup="true" aria-expanded="false" aria-label="Filter by squad">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span id="weekGroupFilterLabel">All Swimmers</span>
+        </button>
+        <div class="week-group-filter__menu" id="weekGroupFilterMenu" hidden>
+          <button type="button" class="week-group-filter__option is-active" data-group="all">All Swimmers</button>
+          <button type="button" class="week-group-filter__option" data-group="Age Group">Ripple <span>(Development)</span></button>
+          <button type="button" class="week-group-filter__option" data-group="Senior">Riptide <span>(Refinement)</span></button>
+        </div>
+      </div>
+      <button type="button" class="week-log__edit-btn" id="weekEditToggle" hidden>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 000-3L17 5a2.1 2.1 0 00-3 0L3.5 15.5V20z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 6.5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Edit practice
+      </button>
+    </div>
   </header>
 
   <div class="week-edit-panel" id="weekEditPanel" hidden>
@@ -2303,17 +2428,23 @@ textarea:focus-visible {
     </div>
   </div>
 
+  <p class="week-log__banner" id="weekLogBanner" hidden></p>
+
   <div class="week-log__stats">
     <div class="week-stat">
-      <span class="week-stat__label">Practices logged</span>
+      <span class="week-stat__label" id="weekStatLabel1">Practices logged</span>
       <span class="week-stat__num" id="weekStatPracticesLogged">0<span class="week-stat__of">/2</span></span>
     </div>
     <div class="week-stat">
-      <span class="week-stat__label">Yardage logged</span>
+      <span class="week-stat__label" id="weekStatLabel2">Yardage logged</span>
       <span class="week-stat__num" id="weekStatYardsLogged">0<span class="week-stat__of">/2,400</span></span>
     </div>
+    <div class="week-stat" id="weekStatAvgBox" hidden>
+      <span class="week-stat__label">Avg yards / swimmer</span>
+      <span class="week-stat__num" id="weekStatAvg">0</span>
+    </div>
     <div class="week-stat week-stat--bar">
-      <span class="week-stat__label">Week progress</span>
+      <span class="week-stat__label" id="weekStatLabel3">Week progress</span>
       <div class="week-stat__track"><div class="week-stat__fill" id="weekStatFill" style="width:0%"></div></div>
     </div>
   </div>
@@ -2325,7 +2456,7 @@ textarea:focus-visible {
   <header class="coach-message__head">
     <div>
       <h2 id="coachMessageHeading">Coach's Message</h2>
-      <p class="coach-message__sub">A note from your coach, and how to reach them.</p>
+      <p class="coach-message__sub" id="coachMessageSub">A note from your coach, and how to reach them.</p>
     </div>
     <button type="button" class="coach-message__edit-btn" id="coachMessageEditToggle" hidden>
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 000-3L17 5a2.1 2.1 0 00-3 0L3.5 15.5V20z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 6.5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -2364,7 +2495,7 @@ textarea:focus-visible {
   <header class="training-log__head">
     <div>
       <h2 id="trainingLogHeading">Training Log</h2>
-      <p class="training-log__sub">Every week you've logged, most recent first — see how your training has added up over time.</p>
+      <p class="training-log__sub" id="trainingLogSub">Every week you've logged, most recent first — see how your training has added up over time.</p>
     </div>
   </header>
 
@@ -2378,7 +2509,7 @@ textarea:focus-visible {
   <header class="meets__head">
     <div>
       <h2 id="meetsHeading">Meets</h2>
-      <p class="meets__sub">When the next meets are, and a place to tell your coach which events you'd like to swim before entries close.</p>
+      <p class="meets__sub" id="meetsSub">When the next meets are, and a place to tell your coach which events you'd like to swim before entries close.</p>
     </div>
     <div class="meets__season-toggle" id="meetsSeasonToggle" role="tablist" aria-label="Season"></div>
   </header>
@@ -2443,7 +2574,7 @@ textarea:focus-visible {
   <header class="stroke-library__head">
     <div>
       <h2 id="strokeLibraryHeading">Stroke Library</h2>
-      <p class="stroke-library__sub">Technique videos picked by the coaching staff. Watch, then bring questions to practice.</p>
+      <p class="stroke-library__sub" id="strokeLibrarySub">Technique videos picked by the coaching staff. Watch, then bring questions to practice.</p>
     </div>
   </header>
 
@@ -2469,7 +2600,7 @@ textarea:focus-visible {
   <header class="away-workouts__head">
     <div>
       <h2 id="awayWorkoutsHeading">Away Workouts</h2>
-      <p class="away-workouts__sub">Missing practice for a trip, a vacation, or a meet out of town? These work in any pool — no team gear required. Browse back through the season week by week to see what got logged.</p>
+      <p class="away-workouts__sub" id="awayWorkoutsSub">Missing practice for a trip, a vacation, or a meet out of town? These work in any pool — no team gear required. Browse back through the season week by week to see what got logged.</p>
     </div>
   </header>
 
@@ -2740,16 +2871,71 @@ const WEEK_PLAN = [
   const statPracticesLogged = document.getElementById('weekStatPracticesLogged');
   const statYardsLogged = document.getElementById('weekStatYardsLogged');
   const statFill = document.getElementById('weekStatFill');
+  const statLabel1 = document.getElementById('weekStatLabel1');
+  const statLabel2 = document.getElementById('weekStatLabel2');
+  const statLabel3 = document.getElementById('weekStatLabel3');
+  const statAvgBox = document.getElementById('weekStatAvgBox');
+  const statAvg = document.getElementById('weekStatAvg');
+  const banner = document.getElementById('weekLogBanner');
   if (!daysWrap) return;
 
+  const API_BASE = 'http://localhost:3001';
   const LOG_KEY = 'splash-week-log';
   const OVERRIDES_KEY = 'splash-week-plan-overrides';
   const CURRENT_USER_KEY = 'splash-current-user';
+
+  function getCurrentUser() {
+    try { return JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null'); } catch (e) { return null; }
+  }
+  function showBanner(message) {
+    if (!banner) return;
+    if (!message) { banner.hidden = true; return; }
+    banner.textContent = message;
+    banner.className = 'week-log__banner is-error';
+    banner.hidden = false;
+  }
+  function api(path, options) {
+    return fetch(API_BASE + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options))
+      .then((res) => {
+        if (!res.ok) return res.json().catch(() => ({})).then((body) => { throw new Error(body.error || ('Request failed (' + res.status + ')')); });
+        return res.json();
+      });
+  }
 
   const editToggle = document.getElementById('weekEditToggle');
   const editPanel = document.getElementById('weekEditPanel');
   const editCancel = document.getElementById('weekEditCancel');
   const editSave = document.getElementById('weekEditSave');
+
+  const groupFilter = document.getElementById('weekGroupFilter');
+  const groupFilterToggle = document.getElementById('weekGroupFilterToggle');
+  const groupFilterMenu = document.getElementById('weekGroupFilterMenu');
+  const groupFilterLabel = document.getElementById('weekGroupFilterLabel');
+  let activeGroupFilter = 'all';
+  let teamListCollapsed = true;
+
+  // For swimmers who didn't log a practice, split "not logged" into
+  // two different-looking states — logged-in-but-forgot vs. wasn't at
+  // practice at all — since a coach reading this list cares which one
+  // it is. There's no real attendance tracking behind this yet, so
+  // it's a stable-per-cell random split rather than a tracked fact.
+  function unloggedLabel() {
+    return Math.random() < 0.35 ? 'absent' : 'not logged';
+  }
+
+  // Coach-facing squad names — the strategy pitch's headline change is
+  // restructuring Splash away from age-banded groups ("Senior" / "Age
+  // Group") toward stage-of-development ones, named with the app's
+  // wave theme: Ripple for younger swimmers still building
+  // fundamentals, Riptide for older swimmers polishing technique and
+  // race craft. The underlying roster data still stores "Senior"/"Age
+  // Group" as the group value (no roster/backend migration yet) —
+  // this is just how it's labeled to a coach here.
+  function groupDisplayName(group) {
+    if (group === 'Age Group') return 'Ripple';
+    if (group === 'Senior') return 'Riptide';
+    return group || 'Unassigned';
+  }
 
   function startOfWeek(date) {
     const d = new Date(date);
@@ -2778,8 +2964,7 @@ const WEEK_PLAN = [
     return date.getFullYear() === t.getFullYear() && date.getMonth() === t.getMonth() && date.getDate() === t.getDate();
   }
 
-  // TODO(sync): replace with a real fetch to a backend endpoint.
-  function readLog() {
+  function readLocalLog() {
     try {
       const raw = localStorage.getItem(LOG_KEY);
       return raw ? JSON.parse(raw) : {};
@@ -2787,13 +2972,52 @@ const WEEK_PLAN = [
       return {};
     }
   }
-  // TODO(sync): replace with a real POST to a backend endpoint.
-  function writeLog(log) {
+  function writeLocalLog(log) {
     try {
       localStorage.setItem(LOG_KEY, JSON.stringify(log));
     } catch (e) {
       /* storage unavailable — entry just won't persist */
     }
+  }
+
+  // Swimmers linked to a real Team Roster record (see the sign-in
+  // script's resolveSwimmerId) log to the backend, so a coach can see
+  // it too. Anyone without a linked id (backend was unreachable at
+  // sign-in, or role isn't swimmer) falls back to this-browser-only
+  // localStorage, same as before.
+  function entriesToMap(entries) {
+    const map = {};
+    entries.forEach((e) => { map[e.date] = { yards: e.yards, loggedAt: e.loggedAt }; });
+    return map;
+  }
+  function loadLog() {
+    const user = getCurrentUser();
+    if (user && user.swimmerId) {
+      showBanner(null);
+      return api('/api/swimmers/' + user.swimmerId + '/week-log')
+        .then(entriesToMap)
+        .catch((err) => {
+          showBanner("Couldn't reach the Splash backend (" + err.message + ") — showing this device's local log instead.");
+          return readLocalLog();
+        });
+    }
+    return Promise.resolve(readLocalLog());
+  }
+  function logEntry(key, yards) {
+    const user = getCurrentUser();
+    if (user && user.swimmerId) {
+      return api('/api/swimmers/' + user.swimmerId + '/week-log', {
+        method: 'POST',
+        body: JSON.stringify({ date: key, yards: yards }),
+      }).catch((err) => {
+        showBanner("Couldn't save to the Splash backend (" + err.message + "). Try again once it's running.");
+        throw err;
+      });
+    }
+    const currentLog = readLocalLog();
+    currentLog[key] = { yards: yards, loggedAt: new Date().toISOString() };
+    writeLocalLog(currentLog);
+    return Promise.resolve();
   }
 
   // TODO(sync): replace with a real fetch/POST once a coach can
@@ -2870,10 +3094,7 @@ const WEEK_PLAN = [
     statFill.style.width = pct + '%';
   }
 
-  function render() {
-    const plan = effectivePlan();
-    const log = readLog();
-    updateStats(plan, log);
+  function renderDays(plan, log) {
     daysWrap.innerHTML = '';
 
     // Only practice days show on the page — with practice down to two
@@ -2933,10 +3154,8 @@ const WEEK_PLAN = [
           input.focus();
           return;
         }
-        const currentLog = readLog();
-        currentLog[key] = { yards: val, loggedAt: new Date().toISOString() };
-        writeLog(currentLog);
-        render();
+        btn.disabled = true;
+        logEntry(key, val).then(render).catch(() => { btn.disabled = false; });
       });
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') btn.click();
@@ -2944,6 +3163,121 @@ const WEEK_PLAN = [
 
       daysWrap.appendChild(row);
     });
+  }
+
+  function renderAthleteView() {
+    statLabel1.textContent = 'Practices logged';
+    statLabel2.textContent = 'Yardage logged';
+    statLabel3.textContent = 'Week progress';
+    statAvgBox.hidden = true;
+    const plan = effectivePlan();
+    loadLog().then((log) => {
+      updateStats(plan, log);
+      renderDays(plan, log);
+    });
+  }
+
+  // ---- Coach: whole-team status instead of a personal log input —
+  // a coach isn't the one swimming, so this replaces the log-yardage
+  // day cards with a per-swimmer breakdown pulled from Team Roster. ----
+  function renderCoachTeamView() {
+    statLabel1.textContent = 'Swimmers logged';
+    statLabel2.textContent = 'Team yardage';
+    statLabel3.textContent = 'Team progress';
+    statAvgBox.hidden = false;
+    daysWrap.innerHTML = '<div class="week-team__empty">Loading team status…</div>';
+    showBanner(null);
+
+    const plan = effectivePlan();
+    const practiceDays = practiceDaysOf(plan);
+    const dayKeys = plan.map((day, i) => (day.type === 'practice' ? dateKey(weekDates[i]) : null));
+
+    api('/api/users?role=swimmer')
+      .then((swimmers) => {
+        const filtered = activeGroupFilter === 'all' ? swimmers : swimmers.filter((s) => s.group === activeGroupFilter);
+        return Promise.all(filtered.map((s) =>
+          api('/api/swimmers/' + s.id + '/week-log').then((entries) => ({ swimmer: s, log: entriesToMap(entries) }))
+        ));
+      })
+      .then((rows) => {
+        let swimmersLogged = 0;
+        let teamYards = 0;
+        rows.forEach(({ log }) => {
+          const loggedThisWeek = dayKeys.some((k) => k && log[k]);
+          if (loggedThisWeek) swimmersLogged++;
+          dayKeys.forEach((k) => { if (k && log[k]) teamYards += Number(log[k].yards) || 0; });
+        });
+
+        statPracticesLogged.firstChild.textContent = String(swimmersLogged);
+        statPracticesLogged.querySelector('.week-stat__of').textContent = '/' + rows.length;
+        statYardsLogged.firstChild.textContent = fmtNum(teamYards);
+        statYardsLogged.querySelector('.week-stat__of').textContent = '';
+        statAvg.textContent = swimmersLogged === 0 ? '—' : fmtNum(Math.round(teamYards / swimmersLogged)) + ' yd';
+        const pct = rows.length === 0 ? 0 : Math.round((swimmersLogged / rows.length) * 100);
+        statFill.style.width = pct + '%';
+
+        if (rows.length === 0) {
+          daysWrap.innerHTML = activeGroupFilter === 'all'
+            ? '<div class="week-team__empty">No swimmers on the roster yet — add some in Team Roster.</div>'
+            : '<div class="week-team__empty">No ' + groupDisplayName(activeGroupFilter) + ' swimmers on the roster yet.</div>';
+          return;
+        }
+
+        const head = '<div class="week-team__row is-head">' +
+          '<span class="week-team__name">Swimmer</span>' +
+          practiceDays.map((d) => '<span class="week-team__day">' + escapeHtml(d.dow) + '</span>').join('') +
+          '<span class="week-team__total">Total</span>' +
+          '<button type="button" class="week-team__arrow" id="weekTeamArrow" aria-expanded="' + String(!teamListCollapsed) + '" aria-label="' + (teamListCollapsed ? 'Show every swimmer' : 'Collapse to just the header') + '">' +
+            chevronIcon() +
+          '</button>' +
+        '</div>';
+
+        const body = rows.map(({ swimmer, log }) => {
+          let total = 0;
+          const dayCells = plan.map((day, i) => {
+            if (day.type !== 'practice') return '';
+            const entry = log[dayKeys[i]];
+            if (entry) {
+              total += Number(entry.yards) || 0;
+              return '<span class="week-team__day is-logged">' + fmtNum(entry.yards) + ' yd</span>';
+            }
+            const label = unloggedLabel();
+            return '<span class="week-team__day' + (label === 'absent' ? ' is-absent' : '') + '">' + label + '</span>';
+          }).join('');
+          return '<div class="week-team__row">' +
+            '<span class="week-team__name">' + escapeHtml(swimmer.name) + (swimmer.group ? ' <span style="font-weight:400;color:var(--ink-soft)">— ' + escapeHtml(groupDisplayName(swimmer.group)) + '</span>' : '') + '</span>' +
+            dayCells +
+            '<span class="week-team__total">' + fmtNum(total) + '</span>' +
+          '</div>';
+        }).join('');
+
+        daysWrap.innerHTML =
+          '<div class="week-team">' + head +
+            '<div class="week-team__body" id="weekTeamBody"' + (teamListCollapsed ? ' hidden' : '') + '>' + body + '</div>' +
+          '</div>';
+
+        const arrowBtn = document.getElementById('weekTeamArrow');
+        const bodyEl = document.getElementById('weekTeamBody');
+        arrowBtn.addEventListener('click', () => {
+          teamListCollapsed = !teamListCollapsed;
+          bodyEl.hidden = teamListCollapsed;
+          arrowBtn.setAttribute('aria-expanded', String(!teamListCollapsed));
+          arrowBtn.setAttribute('aria-label', teamListCollapsed ? 'Show every swimmer' : 'Collapse to just the header');
+        });
+      })
+      .catch((err) => {
+        showBanner("Couldn't reach the Splash backend (" + err.message + "). Make sure it's running: see backend/README.md.");
+        daysWrap.innerHTML = '';
+      });
+  }
+
+  function render() {
+    const user = getCurrentUser();
+    if (user && user.role === 'coach') {
+      renderCoachTeamView();
+    } else {
+      renderAthleteView();
+    }
   }
 
   // ---- Coach: edit practice ----
@@ -2995,6 +3329,42 @@ const WEEK_PLAN = [
   if (editCancel) editCancel.addEventListener('click', closeEditPanel);
   if (editSave) editSave.addEventListener('click', saveEdits);
 
+  if (groupFilter && getRole() === 'coach') groupFilter.hidden = false;
+
+  function closeGroupMenu() {
+    groupFilterMenu.hidden = true;
+    groupFilterToggle.setAttribute('aria-expanded', 'false');
+  }
+  if (groupFilterToggle) {
+    groupFilterToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = !groupFilterMenu.hidden;
+      groupFilterMenu.hidden = isOpen;
+      groupFilterToggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+    groupFilterMenu.querySelectorAll('.week-group-filter__option').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeGroupFilter = btn.getAttribute('data-group');
+        groupFilterLabel.textContent = btn.textContent.trim();
+        groupFilterMenu.querySelectorAll('.week-group-filter__option').forEach((b) => b.classList.toggle('is-active', b === btn));
+        closeGroupMenu();
+        render();
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!groupFilterMenu.hidden && !groupFilter.contains(e.target)) closeGroupMenu();
+    });
+  }
+
+  // Re-render on sign-in (not just page-load restore) so switching
+  // role — or a swimmer's id resolving after the fact — is reflected
+  // without needing a reload.
+  document.addEventListener('splash:user-ready', () => {
+    const isCoach = getRole() === 'coach';
+    editToggle.hidden = !isCoach;
+    if (groupFilter) groupFilter.hidden = !isCoach;
+    render();
+  });
   render();
 })();
 </script>
@@ -4367,18 +4737,67 @@ const AWAY_WORKOUTS = [
 </script>
 
 <script>
-/* Splash component: Home welcome banner
-   Shows the signed-in user's first name. Updates on 'splash:user-ready'
-   (dispatched by the sign-in script below whenever someone signs in
-   or a saved sign-in is restored), so it's correct without a reload.
+/* Splash component: Home welcome banner + role-aware copy
+   Shows the signed-in user's first name, and swaps a set of page
+   captions between athlete-facing and coach-facing phrasing across
+   the app — a coach isn't logging their own yardage, asking their
+   own coach for events, or writing themselves a message to "reach,"
+   they're running the team, so the copy should say that. Updates on
+   'splash:user-ready' (dispatched by the sign-in script below
+   whenever someone signs in or a saved sign-in is restored), so
+   every page is correct without a reload, even ones not currently
+   showing.
 */
 (function () {
   var nameEl = document.getElementById('homeWelcomeName');
   if (!nameEl) return;
+
+  // Each entry: element id -> { coach: '...', default: '...' }.
+  // 'default' covers athlete and parent — their view of these pages
+  // is the same ("watch/do/ask", not "run the team").
+  var ROLE_COPY = {
+    homeWelcomeSub: {
+      coach: "Here's your team's status this week.",
+      default: "Here's what's happening with Splash this week.",
+    },
+    weekLogSub: {
+      coach: "What the team is swimming this week, day by day. Review what everyone's logged, or edit the plan below.",
+      default: "What the team is swimming this week, day by day. Log your yardage after practice so your log matches what actually happened.",
+    },
+    coachMessageSub: {
+      coach: 'Your note to the team, and how they can reach you.',
+      default: 'A note from your coach, and how to reach them.',
+    },
+    trainingLogSub: {
+      coach: "Every week the team has logged, most recent first — see how training has added up over time.",
+      default: "Every week you've logged, most recent first — see how your training has added up over time.",
+    },
+    meetsSub: {
+      coach: 'When the next meets are, and where you can see which events your swimmers want to swim before entries close.',
+      default: "When the next meets are, and a place to tell your coach which events you'd like to swim before entries close.",
+    },
+    strokeLibrarySub: {
+      coach: "Technique videos for the team to reference between practices — picked to reinforce what you're coaching.",
+      default: 'Technique videos picked by the coaching staff. Watch, then bring questions to practice.',
+    },
+    awayWorkoutsSub: {
+      coach: "For swimmers missing practice — a trip, a vacation, a meet out of town. These work in any pool, no team gear required, so nobody has to fall behind.",
+      default: 'Missing practice for a trip, a vacation, or a meet out of town? These work in any pool — no team gear required. Browse back through the season week by week to see what got logged.',
+    },
+  };
+
   document.addEventListener('splash:user-ready', function (e) {
     var user = e.detail;
     var firstName = (user && user.name ? user.name.trim().split(/\s+/)[0] : '') || 'Swimmer';
     nameEl.textContent = firstName;
+
+    var isCoach = user && user.role === 'coach';
+    Object.keys(ROLE_COPY).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var copy = ROLE_COPY[id];
+      el.textContent = isCoach ? copy.coach : copy.default;
+    });
   });
 })();
 </script>
@@ -4498,27 +4917,47 @@ const AWAY_WORKOUTS = [
 
 <script>
 /* Splash component: Training Log
-   A read-only history of past weeks, built from the same
-   'splash-week-log' entries the Home tab's This Week widget writes
-   (see that component's TODO(sync) note — the same applies here:
-   once logging moves to a backend, this reads from there instead,
-   but the weekly-grouping logic below won't need to change).
+   A read-only history of past weeks. For a swimmer linked to a real
+   Team Roster record (see the sign-in script's resolveSwimmerId),
+   this reads their real backend log — the same one the Home tab's
+   This Week widget writes to — so what you log actually shows up
+   here. Falls back to this-browser-only localStorage otherwise
+   (backend unreachable, or no linked swimmer id yet).
 */
 (function () {
   var weeksEl = document.getElementById('trainingLogWeeks');
   var emptyEl = document.getElementById('trainingLogEmpty');
   if (!weeksEl) return;
 
+  var API_BASE = 'http://localhost:3001';
   var LOG_KEY = 'splash-week-log';
   var PRACTICE_DOWS = ['Tue', 'Wed']; // matches WEEK_PLAN's practice days
 
-  function readLog() {
+  function getCurrentUser() {
+    try { return JSON.parse(localStorage.getItem('splash-current-user') || 'null'); } catch (e) { return null; }
+  }
+  function readLocalLog() {
     try {
       var raw = localStorage.getItem(LOG_KEY);
       return raw ? JSON.parse(raw) : {};
     } catch (e) {
       return {};
     }
+  }
+  function entriesToMap(entries) {
+    var map = {};
+    entries.forEach(function (e) { map[e.date] = { yards: e.yards, loggedAt: e.loggedAt }; });
+    return map;
+  }
+  function loadLog() {
+    var user = getCurrentUser();
+    if (user && user.swimmerId) {
+      return fetch(API_BASE + '/api/swimmers/' + user.swimmerId + '/week-log')
+        .then(function (res) { return res.json(); })
+        .then(entriesToMap)
+        .catch(function () { return readLocalLog(); });
+    }
+    return Promise.resolve(readLocalLog());
   }
 
   function startOfWeek(date) {
@@ -4535,7 +4974,10 @@ const AWAY_WORKOUTS = [
   function dayOffset(dow) { return dow === 'Tue' ? 1 : 2; } // days after that week's Monday
 
   function render() {
-    var log = readLog();
+    loadLog().then(renderWeeks);
+  }
+
+  function renderWeeks(log) {
     var logKeys = Object.keys(log);
     if (logKeys.length === 0) {
       emptyEl.hidden = false;
@@ -4591,6 +5033,7 @@ const AWAY_WORKOUTS = [
   }
 
   document.addEventListener('splash:training-log-view', render);
+  document.addEventListener('splash:user-ready', render);
   render();
 })();
 </script>
@@ -4638,6 +5081,29 @@ const AWAY_WORKOUTS = [
     document.dispatchEvent(new CustomEvent('splash:user-ready', { detail: user }));
   }
 
+  // Links a signed-in athlete to a real Team Roster swimmer record —
+  // matched by name, or created if this is their first sign-in — so
+  // This Week can log to the backend per-swimmer instead of one
+  // shared browser-only localStorage bucket, and so a coach's team
+  // view has real swimmers to show. Never blocks sign-in: if the
+  // backend's unreachable this just resolves to no id, and the app
+  // falls back to local-only logging for that session.
+  var API_BASE = 'http://localhost:3001';
+  function resolveSwimmerId(name) {
+    return fetch(API_BASE + '/api/users?role=swimmer')
+      .then(function (res) { return res.json(); })
+      .then(function (swimmers) {
+        var match = swimmers.find(function (s) { return s.name.trim().toLowerCase() === name.trim().toLowerCase(); });
+        if (match) return match.id;
+        return fetch(API_BASE + '/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name, role: 'swimmer' }),
+        }).then(function (res) { return res.json(); }).then(function (created) { return created.id; });
+      })
+      .catch(function () { return null; });
+  }
+
   window.handleSignIn = function () {
     var firstName = firstNameInput.value.trim();
     var lastName = lastNameInput.value.trim();
@@ -4648,8 +5114,17 @@ const AWAY_WORKOUTS = [
     }
     errorEl.style.display = 'none';
     var user = { name: firstName + ' ' + lastName, role: selectedRole };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-    showApp(user);
+
+    if (selectedRole === 'swimmer') {
+      resolveSwimmerId(user.name).then(function (id) {
+        if (id) user.swimmerId = id;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+        showApp(user);
+      });
+    } else {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+      showApp(user);
+    }
   };
 
   window.handleSignOut = function () {
@@ -4671,7 +5146,17 @@ const AWAY_WORKOUTS = [
   try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) { saved = null; }
   if (saved && saved.name) {
     pickRole(saved.role || 'swimmer');
-    showApp(saved);
+    if (saved.role === 'swimmer' && !saved.swimmerId) {
+      resolveSwimmerId(saved.name).then(function (id) {
+        if (id) {
+          saved.swimmerId = id;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+        }
+        showApp(saved);
+      });
+    } else {
+      showApp(saved);
+    }
   }
 })();
 </script>
