@@ -14,6 +14,8 @@ const usersRouter = require('./routes/users');
 const weekLogsRouter = require('./routes/weekLogs');
 const awayWorkoutsRouter = require('./routes/awayWorkouts');
 const { router: meetsRouter, swimmerRequests } = require('./routes/meets');
+const photosRouter = require('./routes/photos');
+const coachMessageRouter = require('./routes/coachMessage');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -37,6 +39,8 @@ app.use('/api', weekLogsRouter);      // /api/swimmers/:id/week-log
 app.use('/api', awayWorkoutsRouter);  // /api/swimmers/:id/away-workouts
 app.use('/api/meets', meetsRouter);   // /api/meets, /api/meets/:id/requests, /api/meets/:id/photos
 app.get('/api/swimmers/:id/meet-requests', swimmerRequests);
+app.use('/api/photos', photosRouter); // team-wide media gallery (practices + meets)
+app.use('/api/coach-message', coachMessageRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);
