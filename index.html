@@ -3086,7 +3086,7 @@ const WEEK_PLAN = [
   const banner = document.getElementById('weekLogBanner');
   if (!daysWrap) return;
 
-  const API_BASE = 'http://localhost:3001';
+  const API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
   const LOG_KEY = 'splash-week-log';
   const OVERRIDES_KEY = 'splash-week-plan-overrides';
   const CURRENT_USER_KEY = 'splash-current-user';
@@ -4499,7 +4499,7 @@ const AWAY_WORKOUTS = [
    (see backend/README.md): node server.js, listening on API_BASE.
 */
 (function () {
-  var API_BASE = 'http://localhost:3001';
+  var API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
 
   var banner = document.getElementById('rosterBanner');
   var swimmerForm = document.getElementById('rosterSwimmerForm');
@@ -4728,7 +4728,7 @@ const AWAY_WORKOUTS = [
    matching note on the backend side.
 */
 (function () {
-  var API_BASE = 'http://localhost:3001';
+  var API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
 
   var banner = document.getElementById('mediaBanner');
   var seasonToggleEl = document.getElementById('mediaSeasonToggle');
@@ -5020,7 +5020,7 @@ const AWAY_WORKOUTS = [
    backend running locally (see backend/README.md).
 */
 (function () {
-  var API_BASE = 'http://localhost:3001';
+  var API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
   var CURRENT_USER_KEY = 'splash-current-user';
 
   var banner = document.getElementById('coachMessageBanner');
@@ -5151,7 +5151,7 @@ const AWAY_WORKOUTS = [
   var groupFiltersEl = document.getElementById('trainingLogGroupFilters');
   if (!weeksEl) return;
 
-  var API_BASE = 'http://localhost:3001';
+  var API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
   var LOG_KEY = 'splash-week-log';
   var PRACTICE_DOWS = ['Tue', 'Wed']; // matches WEEK_PLAN's practice days
 
@@ -5604,7 +5604,7 @@ const AWAY_WORKOUTS = [
   // view has real swimmers to show. Never blocks sign-in: if the
   // backend's unreachable this just resolves to no id, and the app
   // falls back to local-only logging for that session.
-  var API_BASE = 'http://localhost:3001';
+  var API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
   function resolveSwimmerId(name) {
     return fetch(API_BASE + '/api/users?role=swimmer')
       .then(function (res) { return res.json(); })
