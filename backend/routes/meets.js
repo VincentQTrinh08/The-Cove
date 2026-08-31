@@ -90,6 +90,35 @@ router.post('/:id/requests', (req, res) => {
   res.status(201).json(request);
 });
 
+// ---- Volunteer slots ----
+// A coach posts roles they need covered for a meet (timers, hospitality,
+// concessions, etc.) with how many people each role needs; anyone
+// signs up by name — no login/parent-linking required, matching how
+// loose the rest of this prototype's auth is.
+
+// GET /api/meets/:id/volunteer-slots  (slots + who's signed up for each)
+router.get('/:id/volunteer-slots', (req, res) => {
+  const meetId = Number(req.params.id);
+  const slots = db.filter('volunteerSlots', (s) => s.meetId === meetId);
+  const signups = db.all('volunteerSignups');
+  res.json(slots.map((slot) => ({
+    ...slot,
+    signups: signups.filter((su) => su.slotId === slot.id),
+  })));
+});
+
+// POST /api/meets/:id/volunteer-slots  (coach creates a role)
+// body: { role, slotsNeeded, notes? }
+router.post('/:id/volunteer-slots', (req, res) => {
+  const meetId = Number(req.params.id);
+  const { role, slotsNeeded, notes } = req.body || {};
+  if (!role || !Number.isFinite(Number(slotsNeeded)) || Number(slotsNeeded) < 1) {
+    return res.status(400).json({ error: 'role and a positive slotsNeeded are required' });
+  }
+  const slot = db.insert('volunteerSlots', { meetId, role, slotsNeeded: Number(slotsNeeded), notes: notes || '' });
+  res.status(201).json({ ...slot, signups: [] });
+});
+
 // ---- Photos ----
 
 // GET /api/meets/:id/photos
@@ -117,4 +146,47 @@ router.post('/:id/photos', upload.single('photo'), (req, res) => {
   res.status(201).json(photo);
 });
 
-module.exports = { router, swimmerRequests };
+// ---- Volunteer slot signup / cancel / delete ----
+// Mounted separately in server.js (not under /api/meets/:id) since
+// these act on a slot directly, the same way swimmerRequests does.
+
+// DELETE /api/volunteer-slots/:id  (coach removes a role — also clears its signups)
+function deleteVolunteerSlot(req, res) {
+  const slotId = Number(req.params.id);
+  const removed = db.remove('volunteerSlots', slotId);
+  if (!removed) return res.status(404).json({ error: 'Volunteer slot not found' });
+  db.filter('volunteerSignups', (su) => su.slotId === slotId)
+    .forEach((su) => db.remove('volunteerSignups', su.id));
+  res.json({ ok: true });
+}
+
+// POST /api/volunteer-slots/:id/signup   body: { name }
+function volunteerSignup(req, res) {
+  const slotId = Number(req.params.id);
+  const { name } = req.body || {};
+  if (!name || !name.trim()) return res.status(400).json({ error: 'name is required' });
+
+  const slot = db.find('volunteerSlots', (s) => s.id === slotId);
+  if (!slot) return res.status(404).json({ error: 'Volunteer slot not found' });
+
+  const existingSignups = db.filter('volunteerSignups', (su) => su.slotId === slotId);
+  if (existingSignups.some((su) => su.name.trim().toLowerCase() === name.trim().toLowerCase())) {
+    return res.status(409).json({ error: 'Already signed up for this slot' });
+  }
+  if (existingSignups.length >= slot.slotsNeeded) {
+    return res.status(409).json({ error: 'This role is already full' });
+  }
+
+  const signup = db.insert('volunteerSignups', { slotId, name: name.trim(), signedUpAt: new Date().toISOString() });
+  res.status(201).json(signup);
+}
+
+// DELETE /api/volunteer-slots/:id/signup/:signupId
+function volunteerCancelSignup(req, res) {
+  const signupId = Number(req.params.signupId);
+  const removed = db.remove('volunteerSignups', signupId);
+  if (!removed) return res.status(404).json({ error: 'Signup not found' });
+  res.json({ ok: true });
+}
+
+module.exports = { router, swimmerRequests, deleteVolunteerSlot, volunteerSignup, volunteerCancelSignup };

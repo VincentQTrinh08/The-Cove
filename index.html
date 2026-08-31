@@ -1476,6 +1476,110 @@ textarea:focus-visible {
   padding: 30px 0;
 }
 
+/* -- volunteers -- */
+.meet-card__volunteers {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+}
+.meet-card__volunteers-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.meet-card__volunteers-head h4 {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.meet-card__add-role-toggle {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 12.5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.meet-card__add-role-toggle:hover { border-color: var(--primary); }
+
+.meet-card__role-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: var(--primary-tint);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.meet-card__role-form input {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 9px;
+  font-family: inherit;
+  font-size: 13.5px;
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+.meet-card__role-form .volunteer-role-input { flex: 2 1 140px; }
+.meet-card__role-form .volunteer-slots-input { flex: 0 0 90px; }
+.meet-card__role-form .volunteer-notes-input { flex: 3 1 160px; }
+.meet-card__role-form-actions { display: flex; gap: 6px; flex: none; margin-left: auto; }
+.volunteer-role-cancel, .volunteer-role-save {
+  border: none;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.volunteer-role-cancel { background: transparent; color: var(--ink-soft); }
+.volunteer-role-save { background: var(--primary); color: #fff; }
+
+.meet-card__roles-list { display: flex; flex-direction: column; gap: 8px; }
+.meet-card__roles-empty { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+
+.volunteer-slot {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.volunteer-slot.is-full { border-color: var(--good); background: var(--good-tint); }
+.volunteer-slot__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.volunteer-slot__role { font-weight: 700; font-size: 14.5px; color: var(--ink); }
+.volunteer-slot__count { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); }
+.volunteer-slot.is-full .volunteer-slot__count { color: var(--good); }
+.volunteer-slot__notes { font-size: 13px; color: var(--ink-soft); margin: 4px 0 0; }
+.volunteer-slot__names { font-size: 13px; color: var(--ink); margin: 6px 0 0; }
+.volunteer-slot__actions { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.volunteer-slot__signup, .volunteer-slot__cancel, .volunteer-slot__remove {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.volunteer-slot__signup { background: var(--accent); color: var(--accent-ink); }
+.volunteer-slot__signup[disabled] { background: var(--line); color: var(--ink-soft); cursor: not-allowed; }
+.volunteer-slot__cancel { background: transparent; border: 1px solid var(--line); color: var(--critical); }
+.volunteer-slot__remove { background: transparent; color: var(--ink-soft); margin-left: auto; }
+.volunteer-slot__remove:hover { color: var(--critical); }
+.volunteer-slot__full-tag { font-size: 12.5px; font-weight: 700; color: var(--good); }
+
   /* Splash: sign-in screen */
   .signin-screen {
     position: fixed; inset: 0; z-index: 50;
@@ -3377,32 +3481,41 @@ const EVENT_POOL = [
 
 const SEASONS = ['Fall 2026', 'Previous Season'];
 
-const MEETS = [
-  {
-    id: 'splash-meet-1',
-    name: 'Splash Meet 1',
-    season: 'Previous Season',
-    location: 'THPRD Aquatic Center',
-    date: '2026-06-27',
-    entryDeadline: '2026-06-19',
-  },
-  {
-    id: 'splash-meet-2',
-    name: 'Splash Meet 2',
-    season: 'Previous Season',
-    location: 'THPRD Aquatic Center',
-    date: '2026-07-18',
-    entryDeadline: '2026-07-10',
-  },
-  {
-    id: 'splash-championship',
-    name: 'Splash Championship',
-    season: 'Previous Season',
-    location: 'THPRD Aquatic Center',
-    date: '2026-08-15',
-    entryDeadline: '2026-08-07',
-  },
-];
+// Real meets, fetched from the backend below — mutated in place
+// (never reassigned) so any component holding a `MEETS` reference
+// sees the same array once it's populated. A meet with no explicit
+// season is bucketed by whether its date has already passed;
+// 'splash:meets-loaded' fires once the first fetch resolves so
+// components that already rendered (with an empty MEETS) can
+// re-render with real data.
+var MEETS = [];
+
+function seasonForMeetDate(dateStr) {
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return new Date(dateStr + 'T00:00:00') < today ? 'Previous Season' : SEASONS[0];
+}
+
+(function loadMeetsFromBackend() {
+  var API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
+  fetch(API_BASE + '/api/meets')
+    .then(function (res) { return res.json(); })
+    .then(function (meets) {
+      MEETS.length = 0;
+      meets.forEach(function (m) {
+        MEETS.push({
+          id: m.id,
+          name: m.name,
+          location: m.location,
+          date: m.date,
+          entryDeadline: m.entryDeadline,
+          season: seasonForMeetDate(m.date),
+        });
+      });
+      document.dispatchEvent(new CustomEvent('splash:meets-loaded'));
+    })
+    .catch(function () { /* stays empty — Meets view shows "No meets scheduled yet." */ });
+})();
 
 (function initMeets() {
   const calMonthEl = document.getElementById('meetsCalMonth');
@@ -3414,6 +3527,22 @@ const MEETS = [
   if (!calGridEl || !listEl) return;
 
   const REQ_KEY = 'splash-meet-requests';
+  const API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
+
+  function getCurrentUser() {
+    try { return JSON.parse(localStorage.getItem('splash-current-user') || 'null'); } catch (e) { return null; }
+  }
+  function getRole() {
+    const u = getCurrentUser();
+    return u ? u.role : null;
+  }
+  function api(path, options) {
+    return fetch(API_BASE + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options))
+      .then((res) => {
+        if (!res.ok) return res.json().catch(() => ({})).then((body) => { throw new Error(body.error || ('Request failed (' + res.status + ')')); });
+        return res.status === 204 ? null : res.json();
+      });
+  }
 
   let activeSeason = SEASONS[0];
 
@@ -3590,7 +3719,25 @@ const MEETS = [
           '<p class="meet-card__event-count"></p>' +
           '<textarea class="meet-card__notes" placeholder="Anything else your coach should know (e.g. \'prefer relay over 500 free\')"></textarea>' +
           '<button type="button" class="meet-card__submit">Submit request</button>' +
+        '</div>' +
+        '<div class="meet-card__volunteers">' +
+          '<div class="meet-card__volunteers-head">' +
+            '<h4>Volunteers Needed</h4>' +
+            '<button type="button" class="meet-card__add-role-toggle" hidden>+ Add role</button>' +
+          '</div>' +
+          '<div class="meet-card__role-form" hidden>' +
+            '<input type="text" class="volunteer-role-input" placeholder="Role (e.g. Timer)">' +
+            '<input type="number" min="1" value="1" class="volunteer-slots-input" placeholder="Spots">' +
+            '<input type="text" class="volunteer-notes-input" placeholder="Notes (optional)">' +
+            '<div class="meet-card__role-form-actions">' +
+              '<button type="button" class="volunteer-role-cancel">Cancel</button>' +
+              '<button type="button" class="volunteer-role-save">Add role</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="meet-card__roles-list"></div>' +
         '</div>';
+
+      renderVolunteers(card, meet);
 
       const toggleBtn = card.querySelector('.meet-card__request-toggle');
       const panel = card.querySelector('.meet-card__panel');
@@ -3646,6 +3793,131 @@ const MEETS = [
     });
   }
 
+  // ---- Volunteers: coaches post roles needed (timers, hospitality,
+  // concessions...), anyone signs up by name. Talks to the real
+  // backend directly — unlike event requests above, this needs to be
+  // visible to the whole team, not just the browser that made it. ----
+  function renderVolunteers(card, meet) {
+    const rolesListEl = card.querySelector('.meet-card__roles-list');
+    const addToggleBtn = card.querySelector('.meet-card__add-role-toggle');
+    const roleForm = card.querySelector('.meet-card__role-form');
+    const roleInput = card.querySelector('.volunteer-role-input');
+    const slotsInput = card.querySelector('.volunteer-slots-input');
+    const notesInput = card.querySelector('.volunteer-notes-input');
+    const roleCancelBtn = card.querySelector('.volunteer-role-cancel');
+    const roleSaveBtn = card.querySelector('.volunteer-role-save');
+
+    const isCoach = getRole() === 'coach';
+    const currentUser = getCurrentUser();
+    const myName = currentUser && currentUser.name ? currentUser.name.trim() : '';
+
+    addToggleBtn.hidden = !isCoach;
+
+    function loadAndRenderSlots() {
+      rolesListEl.innerHTML = '<p class="meet-card__roles-empty">Loading…</p>';
+      api('/api/meets/' + meet.id + '/volunteer-slots')
+        .then((slots) => {
+          if (slots.length === 0) {
+            rolesListEl.innerHTML = '<p class="meet-card__roles-empty">No volunteer roles posted yet' + (isCoach ? ' — add one above.' : '.') + '</p>';
+            return;
+          }
+          rolesListEl.innerHTML = slots.map((slot) => {
+            const filled = slot.signups.length;
+            const isFull = filled >= slot.slotsNeeded;
+            const mySignup = myName ? slot.signups.find((su) => su.name.trim().toLowerCase() === myName.toLowerCase()) : null;
+            const names = slot.signups.map((su) => escapeHtml(su.name)).join(', ');
+            return (
+              '<div class="volunteer-slot' + (isFull ? ' is-full' : '') + '" data-slot-id="' + slot.id + '">' +
+                '<div class="volunteer-slot__main">' +
+                  '<span class="volunteer-slot__role">' + escapeHtml(slot.role) + '</span>' +
+                  '<span class="volunteer-slot__count">' + filled + '/' + slot.slotsNeeded + ' filled' + (isFull ? ' <span class="volunteer-slot__full-tag">&#10003; Full</span>' : '') + '</span>' +
+                '</div>' +
+                (slot.notes ? '<p class="volunteer-slot__notes">' + escapeHtml(slot.notes) + '</p>' : '') +
+                (names ? '<p class="volunteer-slot__names">Signed up: ' + names + '</p>' : '') +
+                '<div class="volunteer-slot__actions">' +
+                  (mySignup
+                    ? '<button type="button" class="volunteer-slot__cancel" data-signup-id="' + mySignup.id + '">Cancel your signup</button>'
+                    : (isFull ? '' : '<button type="button" class="volunteer-slot__signup"' + (myName ? '' : ' disabled title="Sign in to volunteer"') + '>Sign up</button>')) +
+                  (isCoach ? '<button type="button" class="volunteer-slot__remove">Remove role</button>' : '') +
+                '</div>' +
+              '</div>'
+            );
+          }).join('');
+
+          rolesListEl.querySelectorAll('.volunteer-slot').forEach((slotEl) => {
+            const slotId = slotEl.getAttribute('data-slot-id');
+            const signupBtn = slotEl.querySelector('.volunteer-slot__signup');
+            const cancelBtn = slotEl.querySelector('.volunteer-slot__cancel');
+            const removeBtn = slotEl.querySelector('.volunteer-slot__remove');
+            if (signupBtn) {
+              signupBtn.addEventListener('click', () => {
+                if (!myName) return;
+                signupBtn.disabled = true;
+                api('/api/volunteer-slots/' + slotId + '/signup', { method: 'POST', body: JSON.stringify({ name: myName }) })
+                  .then(loadAndRenderSlots)
+                  .catch((err) => { alert(err.message); signupBtn.disabled = false; });
+              });
+            }
+            if (cancelBtn) {
+              cancelBtn.addEventListener('click', () => {
+                const signupId = cancelBtn.getAttribute('data-signup-id');
+                cancelBtn.disabled = true;
+                api('/api/volunteer-slots/' + slotId + '/signup/' + signupId, { method: 'DELETE' })
+                  .then(loadAndRenderSlots)
+                  .catch((err) => { alert(err.message); cancelBtn.disabled = false; });
+              });
+            }
+            if (removeBtn) {
+              removeBtn.addEventListener('click', () => {
+                if (!confirm('Remove this volunteer role and any signups for it?')) return;
+                api('/api/volunteer-slots/' + slotId, { method: 'DELETE' })
+                  .then(loadAndRenderSlots)
+                  .catch((err) => alert(err.message));
+              });
+            }
+          });
+        })
+        .catch(() => {
+          rolesListEl.innerHTML = '<p class="meet-card__roles-empty">Couldn’t load volunteer roles.</p>';
+        });
+    }
+
+    if (isCoach) {
+      addToggleBtn.addEventListener('click', () => {
+        roleForm.hidden = !roleForm.hidden;
+        if (!roleForm.hidden) roleInput.focus();
+      });
+      roleCancelBtn.addEventListener('click', () => {
+        roleForm.hidden = true;
+        roleInput.value = '';
+        slotsInput.value = '1';
+        notesInput.value = '';
+      });
+      roleSaveBtn.addEventListener('click', () => {
+        const role = roleInput.value.trim();
+        const slotsNeeded = parseInt(slotsInput.value, 10);
+        if (!role || !slotsNeeded || slotsNeeded < 1) {
+          roleInput.focus();
+          return;
+        }
+        roleSaveBtn.disabled = true;
+        api('/api/meets/' + meet.id + '/volunteer-slots', {
+          method: 'POST',
+          body: JSON.stringify({ role, slotsNeeded, notes: notesInput.value.trim() }),
+        }).then(() => {
+          roleForm.hidden = true;
+          roleInput.value = '';
+          slotsInput.value = '1';
+          notesInput.value = '';
+          roleSaveBtn.disabled = false;
+          loadAndRenderSlots();
+        }).catch((err) => { alert(err.message); roleSaveBtn.disabled = false; });
+      });
+    }
+
+    loadAndRenderSlots();
+  }
+
   calPrevBtn.addEventListener('click', () => {
     viewMonth -= 1;
     if (viewMonth < 0) { viewMonth = 11; viewYear -= 1; }
@@ -3656,6 +3928,16 @@ const MEETS = [
     if (viewMonth > 11) { viewMonth = 0; viewYear += 1; }
     renderCalendar();
   });
+
+  document.addEventListener('splash:meets-loaded', () => {
+    firstMeetDate = firstMeetDateOf(activeSeason);
+    viewYear = firstMeetDate.getFullYear();
+    viewMonth = firstMeetDate.getMonth();
+    renderSeasonToggle();
+    renderCalendar();
+    renderList();
+  });
+  document.addEventListener('splash:user-ready', renderList);
 
   renderSeasonToggle();
   renderCalendar();
@@ -4558,6 +4840,12 @@ const AWAY_WORKOUTS = [
   renderMeetSelect();
   document.addEventListener('splash:media-view', function () {
     loadPhotos();
+  });
+  document.addEventListener('splash:meets-loaded', function () {
+    renderSeasonToggle();
+    renderMeetSelect();
+    renderFilters();
+    renderGrid();
   });
 })();
 </script>

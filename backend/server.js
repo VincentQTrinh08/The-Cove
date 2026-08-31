@@ -13,7 +13,13 @@ const path = require('path');
 const usersRouter = require('./routes/users');
 const weekLogsRouter = require('./routes/weekLogs');
 const awayWorkoutsRouter = require('./routes/awayWorkouts');
-const { router: meetsRouter, swimmerRequests } = require('./routes/meets');
+const {
+  router: meetsRouter,
+  swimmerRequests,
+  deleteVolunteerSlot,
+  volunteerSignup,
+  volunteerCancelSignup,
+} = require('./routes/meets');
 const photosRouter = require('./routes/photos');
 const coachMessageRouter = require('./routes/coachMessage');
 
@@ -39,6 +45,9 @@ app.use('/api', weekLogsRouter);      // /api/swimmers/:id/week-log
 app.use('/api', awayWorkoutsRouter);  // /api/swimmers/:id/away-workouts
 app.use('/api/meets', meetsRouter);   // /api/meets, /api/meets/:id/requests, /api/meets/:id/photos
 app.get('/api/swimmers/:id/meet-requests', swimmerRequests);
+app.delete('/api/volunteer-slots/:id', deleteVolunteerSlot);
+app.post('/api/volunteer-slots/:id/signup', volunteerSignup);
+app.delete('/api/volunteer-slots/:id/signup/:signupId', volunteerCancelSignup);
 app.use('/api/photos', photosRouter); // team-wide media gallery (practices + meets)
 app.use('/api/coach-message', coachMessageRouter);
 
