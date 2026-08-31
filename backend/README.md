@@ -52,27 +52,42 @@ linked swimmers). There's no login yet — see below.
 | POST | `/api/swimmers/:id/away-workouts` | Log a workout done (`{week, workoutId}`) |
 | GET | `/api/meets` | List meets |
 | POST | `/api/meets` | Create a meet (coach) |
-| GET | `/api/meets/:id/requests` | Everyone's event requests for a meet (coach view) |
-| POST | `/api/meets/:id/requests` | Submit/update a swimmer's event request |
-| GET | `/api/swimmers/:id/meet-requests` | One swimmer's requests across all meets |
 | GET | `/api/meets/:id/photos` | Photos for a meet |
 | POST | `/api/meets/:id/photos` | Upload a photo (multipart: `photo`, `uploadedByUserId`, `caption?`) |
+| GET | `/api/swimmers/:id/away-workouts` | Away Workouts completion log |
+| POST | `/api/swimmers/:id/away-workouts` | Log a workout done (`{week, workoutId}`) |
+| GET | `/api/practice-plan` | The team's standing Tue/Wed practice overrides |
+| PUT | `/api/practice-plan/:dow` | Coach updates one weekday (`{focus, targetYards}`) |
 
-## Wiring the frontend to this instead of localStorage
+## Scope: what The Cove does vs. SwimTopia
 
-Each frontend component currently has a `TODO(sync)` comment marking
-exactly where to swap `localStorage.getItem/setItem` for a `fetch()`
-call to the matching endpoint above:
+THPRD purchased SwimTopia for team ops — registration, meet entries/
+RSVPs, volunteer job-board management, and team communications. The
+Cove intentionally doesn't duplicate any of that anymore: event
+requests, volunteer sign-ups, and Coach's Message were removed (along
+with their backend routes) since SwimTopia already covers them. The
+Cove's Meets tab is now read-only — calendar, name, date, location,
+entry deadline — pointing people at when things are rather than
+handling entries or volunteers itself. What's left is the stuff
+SwimTopia doesn't do: daily training logs, away workouts, the stroke
+library, and team media.
 
-- `components/this-week-log/this-week-log.js` → `/api/swimmers/:id/week-log`
-- `components/away-workouts/away-workouts.js` → `/api/swimmers/:id/away-workouts`
-- `components/meets/meets.js` → `/api/meets/:id/requests` and `/api/meets/:id/photos`
+## Wiring status
 
-None of that is wired up yet — this backend runs standalone. Once
-it's deployed somewhere reachable, those `TODO(sync)` spots become
-`fetch()` calls pointed at its URL, and everything an artifact page
-currently only remembers on one device starts working across
-devices for real.
+Every remaining frontend component talks to this backend directly
+instead of `localStorage` — This Week, Away Workouts, Meets (read-only
+calendar/listing), and Team Roster. There's no `TODO(sync)` left in
+`index.html`.
+
+One thing worth knowing: this store is plain JSON files under
+`data/` on whatever filesystem the server runs on (see "Data storage"
+above). On a host like Railway, a fresh deploy typically rebuilds the
+container from git — so anything written through the live API since
+the last commit (a new roster entry, a logged workout, a practice-plan
+edit) won't survive a redeploy unless it's also been committed to
+`data/*.json`, or the host is configured with a persistent volume
+mounted at `data/`. Worth confirming before relying on same-day data
+surviving a deploy.
 
 ## Adding real auth next
 

@@ -27,14 +27,6 @@ const meets = [
   { name: 'Winter Kickoff Meet', location: 'THPRD Aquatic Center', date: '2026-11-08', entryDeadline: '2026-10-31' },
 ].map((m) => db.insert('meets', m));
 
-db.insert('meetRequests', {
-  meetId: meets[0].id,
-  swimmerId: maya.id,
-  events: ['50 Free', '100 Back'],
-  notes: '',
-  submittedAt: new Date().toISOString(),
-});
-
 db.insert('weekLogs', {
   swimmerId: maya.id,
   date: '2026-09-01',

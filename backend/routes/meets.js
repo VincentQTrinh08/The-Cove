@@ -1,9 +1,9 @@
-/* Meets: the calendar, per-swimmer event requests, and meet photos.
+/* Meets: the calendar and meet photos.
  * Mirrors components/meets/meets.js on the frontend.
  *
- * A "request" is the swimmer's ask, not the official entry — a
- * coach still sets the real lineup using GET /api/meets/:id/requests
- * to see what everyone asked for.
+ * Event requests and volunteer sign-ups used to live here too, but
+ * THPRD's SwimTopia purchase already covers both (Meet Entries/RSVPs
+ * and Volunteer Management), so this stays read-only meet info.
  */
 
 const express = require('express');
@@ -33,8 +33,6 @@ const upload = multer({
   },
 });
 
-const MAX_EVENTS_PER_MEET = 4;
-
 // ---- Meets ----
 
 // GET /api/meets
@@ -52,71 +50,6 @@ router.post('/', (req, res) => {
   }
   const meet = db.insert('meets', { name, location, date, entryDeadline });
   res.status(201).json(meet);
-});
-
-// ---- Event requests ----
-
-// GET /api/meets/:id/requests  (coach-facing: everyone's request for this meet)
-router.get('/:id/requests', (req, res) => {
-  const meetId = Number(req.params.id);
-  const requests = db.filter('meetRequests', (r) => r.meetId === meetId);
-  res.json(requests);
-});
-
-// GET /api/swimmers/:id/meet-requests  (swimmer-facing: their own requests, mounted below)
-function swimmerRequests(req, res) {
-  const swimmerId = Number(req.params.id);
-  const requests = db.filter('meetRequests', (r) => r.swimmerId === swimmerId);
-  res.json(requests);
-}
-
-// POST /api/meets/:id/requests
-// body: { swimmerId, events: string[] (max 4), notes? }
-router.post('/:id/requests', (req, res) => {
-  const meetId = Number(req.params.id);
-  const { swimmerId, events, notes } = req.body || {};
-  if (!swimmerId || !Array.isArray(events) || events.length === 0) {
-    return res.status(400).json({ error: 'swimmerId and a non-empty events array are required' });
-  }
-  if (events.length > MAX_EVENTS_PER_MEET) {
-    return res.status(400).json({ error: `events cannot exceed ${MAX_EVENTS_PER_MEET}` });
-  }
-
-  const request = db.upsert(
-    'meetRequests',
-    (r) => r.meetId === meetId && r.swimmerId === Number(swimmerId),
-    { meetId, swimmerId: Number(swimmerId), events, notes: notes || '', submittedAt: new Date().toISOString() }
-  );
-  res.status(201).json(request);
-});
-
-// ---- Volunteer slots ----
-// A coach posts roles they need covered for a meet (timers, hospitality,
-// concessions, etc.) with how many people each role needs; anyone
-// signs up by name — no login/parent-linking required, matching how
-// loose the rest of this prototype's auth is.
-
-// GET /api/meets/:id/volunteer-slots  (slots + who's signed up for each)
-router.get('/:id/volunteer-slots', (req, res) => {
-  const meetId = Number(req.params.id);
-  const slots = db.filter('volunteerSlots', (s) => s.meetId === meetId);
-  const signups = db.all('volunteerSignups');
-  res.json(slots.map((slot) => ({
-    ...slot,
-    signups: signups.filter((su) => su.slotId === slot.id),
-  })));
-});
-
-// POST /api/meets/:id/volunteer-slots  (coach creates a role)
-// body: { role, slotsNeeded, notes? }
-router.post('/:id/volunteer-slots', (req, res) => {
-  const meetId = Number(req.params.id);
-  const { role, slotsNeeded, notes } = req.body || {};
-  if (!role || !Number.isFinite(Number(slotsNeeded)) || Number(slotsNeeded) < 1) {
-    return res.status(400).json({ error: 'role and a positive slotsNeeded are required' });
-  }
-  const slot = db.insert('volunteerSlots', { meetId, role, slotsNeeded: Number(slotsNeeded), notes: notes || '' });
-  res.status(201).json({ ...slot, signups: [] });
 });
 
 // ---- Photos ----
@@ -146,47 +79,4 @@ router.post('/:id/photos', upload.single('photo'), (req, res) => {
   res.status(201).json(photo);
 });
 
-// ---- Volunteer slot signup / cancel / delete ----
-// Mounted separately in server.js (not under /api/meets/:id) since
-// these act on a slot directly, the same way swimmerRequests does.
-
-// DELETE /api/volunteer-slots/:id  (coach removes a role — also clears its signups)
-function deleteVolunteerSlot(req, res) {
-  const slotId = Number(req.params.id);
-  const removed = db.remove('volunteerSlots', slotId);
-  if (!removed) return res.status(404).json({ error: 'Volunteer slot not found' });
-  db.filter('volunteerSignups', (su) => su.slotId === slotId)
-    .forEach((su) => db.remove('volunteerSignups', su.id));
-  res.json({ ok: true });
-}
-
-// POST /api/volunteer-slots/:id/signup   body: { name }
-function volunteerSignup(req, res) {
-  const slotId = Number(req.params.id);
-  const { name } = req.body || {};
-  if (!name || !name.trim()) return res.status(400).json({ error: 'name is required' });
-
-  const slot = db.find('volunteerSlots', (s) => s.id === slotId);
-  if (!slot) return res.status(404).json({ error: 'Volunteer slot not found' });
-
-  const existingSignups = db.filter('volunteerSignups', (su) => su.slotId === slotId);
-  if (existingSignups.some((su) => su.name.trim().toLowerCase() === name.trim().toLowerCase())) {
-    return res.status(409).json({ error: 'Already signed up for this slot' });
-  }
-  if (existingSignups.length >= slot.slotsNeeded) {
-    return res.status(409).json({ error: 'This role is already full' });
-  }
-
-  const signup = db.insert('volunteerSignups', { slotId, name: name.trim(), signedUpAt: new Date().toISOString() });
-  res.status(201).json(signup);
-}
-
-// DELETE /api/volunteer-slots/:id/signup/:signupId
-function volunteerCancelSignup(req, res) {
-  const signupId = Number(req.params.signupId);
-  const removed = db.remove('volunteerSignups', signupId);
-  if (!removed) return res.status(404).json({ error: 'Signup not found' });
-  res.json({ ok: true });
-}
-
-module.exports = { router, swimmerRequests, deleteVolunteerSlot, volunteerSignup, volunteerCancelSignup };
+module.exports = { router };

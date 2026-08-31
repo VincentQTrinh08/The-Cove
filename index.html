@@ -1226,6 +1226,10 @@ textarea:focus-visible {
 }
 @media (max-width: 860px) {
   .meets__layout { grid-template-columns: 1fr; }
+  /* Calendar and list stack in one column here — sticky would let the
+     list slide underneath the calendar while scrolling, bleeding
+     through its empty grid cells. Only makes sense side-by-side. */
+  .meets__calendar-card { position: static; }
 }
 
 /* -- calendar -- */
@@ -1379,206 +1383,12 @@ textarea:focus-visible {
 .meet-card__deadline.status-soon { background: var(--warn-tint); color: var(--warn); }
 .meet-card__deadline.status-closed { background: var(--paper); color: var(--ink-soft); border: 1px solid var(--line); }
 
-.meet-card__request-toggle {
-  margin-top: 12px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  border: none;
-  padding: 9px 16px;
-  border-radius: 7px;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-}
-.meet-card__request-toggle[disabled] {
-  background: var(--paper);
-  color: var(--ink-soft);
-  border: 1px solid var(--line);
-  cursor: not-allowed;
-}
-.meet-card.has-request .meet-card__request-toggle {
-  background: var(--paper);
-  color: var(--good);
-  border: 1px solid var(--good);
-}
-
-.meet-card__summary {
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--ink);
-  display: none;
-}
-.meet-card.has-request .meet-card__summary { display: block; }
-.meet-card__summary strong { color: var(--good); }
-
-.meet-card__panel {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--line);
-}
-
-.meet-card__events {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.meet-event-check {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  padding: 8px 10px;
-  font-size: 14px;
-  cursor: pointer;
-}
-.meet-event-check.is-checked { border-color: var(--primary); background: var(--primary-tint); }
-.meet-event-check input { accent-color: var(--primary); width: 16px; height: 16px; }
-.meet-event-check.is-disabled { opacity: 0.5; cursor: not-allowed; }
-
-.meet-card__event-count {
-  font-size: 12.5px;
-  color: var(--ink-soft);
-  margin-bottom: 10px;
-}
-.meet-card__event-count strong { color: var(--ink); }
-
-.meet-card__notes {
-  width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  padding: 9px 11px;
-  font-family: inherit;
-  font-size: 14px;
-  background: var(--paper);
-  color: var(--ink);
-  resize: vertical;
-  min-height: 60px;
-  margin-bottom: 12px;
-}
-
-.meet-card__submit {
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  padding: 9px 16px;
-  border-radius: 7px;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-}
-
 .meets__empty {
   color: var(--ink-soft);
   font-size: 15px;
   text-align: center;
   padding: 30px 0;
 }
-
-/* -- volunteers -- */
-.meet-card__volunteers {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--line);
-}
-.meet-card__volunteers-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.meet-card__volunteers-head h4 {
-  font-size: 14px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--ink-soft);
-  margin: 0;
-}
-.meet-card__add-role-toggle {
-  background: transparent;
-  border: 1px solid var(--line);
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 12.5px;
-  padding: 5px 11px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-.meet-card__add-role-toggle:hover { border-color: var(--primary); }
-
-.meet-card__role-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  background: var(--primary-tint);
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-.meet-card__role-form input {
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 7px 9px;
-  font-family: inherit;
-  font-size: 13.5px;
-  background: var(--paper-raised);
-  color: var(--ink);
-}
-.meet-card__role-form .volunteer-role-input { flex: 2 1 140px; }
-.meet-card__role-form .volunteer-slots-input { flex: 0 0 90px; }
-.meet-card__role-form .volunteer-notes-input { flex: 3 1 160px; }
-.meet-card__role-form-actions { display: flex; gap: 6px; flex: none; margin-left: auto; }
-.volunteer-role-cancel, .volunteer-role-save {
-  border: none;
-  border-radius: 6px;
-  padding: 7px 12px;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-}
-.volunteer-role-cancel { background: transparent; color: var(--ink-soft); }
-.volunteer-role-save { background: var(--primary); color: #fff; }
-
-.meet-card__roles-list { display: flex; flex-direction: column; gap: 8px; }
-.meet-card__roles-empty { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
-
-.volunteer-slot {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 10px 12px;
-}
-.volunteer-slot.is-full { border-color: var(--good); background: var(--good-tint); }
-.volunteer-slot__main {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.volunteer-slot__role { font-weight: 700; font-size: 14.5px; color: var(--ink); }
-.volunteer-slot__count { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); }
-.volunteer-slot.is-full .volunteer-slot__count { color: var(--good); }
-.volunteer-slot__notes { font-size: 13px; color: var(--ink-soft); margin: 4px 0 0; }
-.volunteer-slot__names { font-size: 13px; color: var(--ink); margin: 6px 0 0; }
-.volunteer-slot__actions { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-.volunteer-slot__signup, .volunteer-slot__cancel, .volunteer-slot__remove {
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-weight: 700;
-  font-size: 12.5px;
-  cursor: pointer;
-}
-.volunteer-slot__signup { background: var(--accent); color: var(--accent-ink); }
-.volunteer-slot__signup[disabled] { background: var(--line); color: var(--ink-soft); cursor: not-allowed; }
-.volunteer-slot__cancel { background: transparent; border: 1px solid var(--line); color: var(--critical); }
-.volunteer-slot__remove { background: transparent; color: var(--ink-soft); margin-left: auto; }
-.volunteer-slot__remove:hover { color: var(--critical); }
-.volunteer-slot__full-tag { font-size: 12.5px; font-weight: 700; color: var(--good); }
 
   /* Splash: sign-in screen */
   .signin-screen {
@@ -2026,112 +1836,6 @@ textarea:focus-visible {
 .home-welcome__title { font-size: 30px; margin: 0; }
 .home-welcome__sub { color: var(--ink-soft); font-size: 15.5px; margin: 6px 0 0; }
 
-/* ==== Coach's Message ==== */
-.coach-message { max-width: 1180px; margin-top: 28px; }
-.coach-message__head {
-  margin-bottom: 14px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.coach-message__head h2 { font-size: 22px; margin: 0; }
-.coach-message__sub { color: var(--ink-soft); font-size: 14px; margin: 4px 0 0; }
-
-.coach-message__edit-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--paper-raised);
-  border: 1.5px solid var(--line);
-  color: var(--primary-strong);
-  font-weight: 700;
-  font-size: 14px;
-  padding: 9px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  flex: none;
-}
-.coach-message__edit-btn:hover { border-color: var(--primary); }
-.coach-message__edit-btn svg { width: 15px; height: 15px; }
-
-.coach-message__banner {
-  margin: 0 0 14px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 13.5px;
-  font-weight: 600;
-}
-.coach-message__banner.is-error { background: var(--critical-tint); color: var(--critical); }
-.coach-message__banner.is-ok { background: var(--good-tint); color: var(--good); }
-
-.coach-message__edit-panel {
-  background: var(--primary-tint);
-  border: 1px solid var(--primary);
-  border-radius: var(--radius);
-  padding: 16px 18px;
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.coach-message__field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--ink-soft);
-}
-.coach-message__field textarea,
-.coach-message__field input {
-  border: 1.5px solid var(--line);
-  border-radius: 7px;
-  padding: 9px 11px;
-  font-family: inherit;
-  font-size: 14.5px;
-  background: var(--paper-raised);
-  color: var(--ink);
-  resize: vertical;
-}
-.coach-message__edit-actions { display: flex; justify-content: flex-end; gap: 10px; }
-.coach-message__cancel, .coach-message__save {
-  border: none;
-  border-radius: 7px;
-  padding: 9px 16px;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-}
-.coach-message__cancel { background: transparent; color: var(--ink-soft); }
-.coach-message__save { background: var(--primary); color: #fff; }
-.coach-message__save:hover { background: var(--primary-strong); }
-
-.coach-message__body {
-  background: var(--paper-raised);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  box-shadow: var(--shadow);
-}
-.coach-message__text { font-size: 15px; line-height: 1.55; margin: 0; white-space: pre-wrap; color: var(--ink); }
-.coach-message__email {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 14px;
-  text-decoration: none;
-}
-.coach-message__email:hover { text-decoration: underline; }
-.coach-message__email svg { width: 16px; height: 16px; }
-.coach-message__meta { font-size: 12px; color: var(--ink-soft); margin: 10px 0 0; }
-
 /* ==== Training Log ==== */
 .training-log { max-width: 1180px; }
 .training-log__head { margin-bottom: 18px; }
@@ -2420,7 +2124,7 @@ textarea:focus-visible {
         Meets
       </button>
       <button type="button" data-view="stroke-library" onclick="setView('stroke-library')">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l8-8 8 8M6 10v10h12V10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="7" cy="5" r="1.6" stroke="currentColor" stroke-width="2"/><path d="M9 8.5l2.5 2.5 3-1.5 3.5 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 15.5c1.5 1.4 3.2 1.4 4.7 0a3.4 3.4 0 014.6 0 3.4 3.4 0 004.6 0 3.4 3.4 0 014.6 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 19.3c1.5 1.4 3.2 1.4 4.7 0a3.4 3.4 0 014.6 0 3.4 3.4 0 004.6 0 3.4 3.4 0 014.6 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/></svg>
         Stroke Library
       </button>
       <button type="button" data-view="away-workouts" onclick="setView('away-workouts')">
@@ -2485,7 +2189,7 @@ textarea:focus-visible {
   <div class="week-edit-panel" id="weekEditPanel" hidden>
     <div class="week-edit-panel__head">
       <h3>Edit this week's practice</h3>
-      <p>Changes apply for anyone viewing This Week on this device — publishing to the whole team is next.</p>
+      <p>Changes publish to the whole team as soon as you save.</p>
     </div>
     <div class="week-edit-row">
       <span class="week-edit-row__day">Tue</span>
@@ -2525,43 +2229,6 @@ textarea:focus-visible {
   </div>
 
   <div class="week-log__days" id="weekLogDays"></div>
-</section>
-
-<section class="coach-message" aria-labelledby="coachMessageHeading">
-  <header class="coach-message__head">
-    <div>
-      <h2 id="coachMessageHeading">Coach's Message</h2>
-      <p class="coach-message__sub" id="coachMessageSub">A note from your coach, and how to reach them.</p>
-    </div>
-    <button type="button" class="coach-message__edit-btn" id="coachMessageEditToggle" hidden>
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 000-3L17 5a2.1 2.1 0 00-3 0L3.5 15.5V20z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 6.5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      Edit message
-    </button>
-  </header>
-
-  <p class="coach-message__banner" id="coachMessageBanner" hidden></p>
-
-  <div class="coach-message__edit-panel" id="coachMessageEditPanel" hidden>
-    <label class="coach-message__field">Message
-      <textarea id="coachMessageInput" rows="4" placeholder="What's coming up this week, reminders, encouragement..."></textarea>
-    </label>
-    <label class="coach-message__field">Contact email
-      <input type="email" id="coachMessageEmailInput" placeholder="coach@example.com">
-    </label>
-    <div class="coach-message__edit-actions">
-      <button type="button" class="coach-message__cancel" id="coachMessageCancel">Cancel</button>
-      <button type="button" class="coach-message__save" id="coachMessageSave">Save</button>
-    </div>
-  </div>
-
-  <div class="coach-message__body" id="coachMessageBody">
-    <p class="coach-message__text" id="coachMessageText">No message from the coach yet.</p>
-    <a class="coach-message__email" id="coachMessageEmailLink" href="#" hidden>
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 6.5L12 13l8.5-6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span id="coachMessageEmailText"></span>
-    </a>
-    <p class="coach-message__meta" id="coachMessageMeta" hidden></p>
-  </div>
 </section>
     </section>
 
@@ -2627,7 +2294,7 @@ textarea:focus-visible {
   <header class="meets__head">
     <div>
       <h2 id="meetsHeading">Meets</h2>
-      <p class="meets__sub" id="meetsSub">When the next meets are, and a place to tell your coach which events you'd like to swim before entries close.</p>
+      <p class="meets__sub" id="meetsSub">When the next meets are, where they're held, and when entries close.</p>
     </div>
     <div class="meets__season-toggle" id="meetsSeasonToggle" role="tablist" aria-label="Season"></div>
   </header>
@@ -2674,7 +2341,7 @@ textarea:focus-visible {
   </div>
 
   <div class="stroke-library__grid" id="strokeLibraryGrid" aria-live="polite">
-    <!-- cards rendered here by stroke-library.js -->
+    <!-- cards rendered here by initStrokeLibrary, below -->
   </div>
 
   <p class="stroke-library__empty" id="strokeLibraryEmpty" hidden>No videos in this category yet.</p>
@@ -2868,21 +2535,15 @@ textarea:focus-visible {
 <script>
 /* Splash component: This Week (training log)
    Renders the current week's planned practice, day by day, and lets
-   a swimmer log the yardage they actually swam. Logged yardage is
-   stored in localStorage under 'splash-week-log', keyed by date —
-   per-swimmer, per-device for the prototype.
+   a swimmer log the yardage they actually swam — logged to the real
+   backend (/api/swimmers/:id/week-log) so a coach sees it too.
 
    Coaches (role === 'coach', from 'splash-current-user' — see the
    sign-in screen) get an "Edit practice" control that lets them
-   change each practice day's focus and target yardage. Edits are
-   stored in localStorage under 'splash-week-plan-overrides' for the
-   prototype and layered over WEEK_PLAN at render time.
-
-   TODO(sync): replace readLog()/writeLog() and
-   readOverrides()/writeOverrides() with calls to a real backend so a
-   coach's edits actually publish to the team instead of just this
-   browser, and so logged yardage is visible to coaches too. The rest
-   of this file (rendering, stats) doesn't need to change. */
+   change each practice day's focus and target yardage for the whole
+   team. Those overrides are also backend-backed (/api/practice-plan,
+   one shared record per weekday — see loadOverrides/saveEdits) and
+   layered over WEEK_PLAN at render time via effectivePlan(). */
 
 // Monday-first weekly plan. Practice is Tuesday and Wednesday only,
 // 45 minutes each — sets are sized for that (1,200 yards target per
@@ -2967,7 +2628,6 @@ const WEEK_PLAN = [
 
   const API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
   const LOG_KEY = 'splash-week-log';
-  const OVERRIDES_KEY = 'splash-week-plan-overrides';
   const CURRENT_USER_KEY = 'splash-current-user';
 
   function getCurrentUser() {
@@ -3106,22 +2766,14 @@ const WEEK_PLAN = [
     return Promise.resolve();
   }
 
-  // TODO(sync): replace with a real fetch/POST once a coach can
-  // publish the week's plan to a backend (see splash-backend).
-  function readOverrides() {
-    try {
-      const raw = localStorage.getItem(OVERRIDES_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      return {};
-    }
-  }
-  function writeOverrides(overrides) {
-    try {
-      localStorage.setItem(OVERRIDES_KEY, JSON.stringify(overrides));
-    } catch (e) {
-      /* storage unavailable */
-    }
+  // Team-wide (not per-swimmer) overrides to the standing Tue/Wed
+  // template, published by a coach via /api/practice-plan — loaded once
+  // at init (loadOverrides, below) and refreshed after each save.
+  let overrides = {};
+  function loadOverrides() {
+    return api('/api/practice-plan')
+      .then((data) => { overrides = data || {}; })
+      .catch(() => { /* backend unreachable — keep showing the default plan */ });
   }
   function getRole() {
     try {
@@ -3132,7 +2784,6 @@ const WEEK_PLAN = [
     }
   }
   function effectivePlan() {
-    const overrides = readOverrides();
     return WEEK_PLAN.map((day) => {
       const o = overrides[day.dow];
       if (!o) return day;
@@ -3387,7 +3038,7 @@ const WEEK_PLAN = [
     editPanel.hidden = true;
   }
   function saveEdits() {
-    const overrides = readOverrides();
+    const changes = [];
     let ok = true;
     practiceDaysOf(WEEK_PLAN).forEach((day) => {
       const focusInput = document.getElementById('weekEditFocus' + day.dow);
@@ -3400,12 +3051,24 @@ const WEEK_PLAN = [
         (!focus ? focusInput : yardsInput).focus();
         return;
       }
-      overrides[day.dow] = { focus: focus, targetYards: yards };
+      changes.push({ dow: day.dow, focus: focus, targetYards: yards });
     });
     if (!ok) return;
-    writeOverrides(overrides);
-    closeEditPanel();
-    render();
+
+    editSave.disabled = true;
+    Promise.all(changes.map((c) =>
+      api('/api/practice-plan/' + c.dow, { method: 'PUT', body: JSON.stringify({ focus: c.focus, targetYards: c.targetYards }) })
+    ))
+      .then((saved) => {
+        saved.forEach((s) => { overrides[s.dow] = { focus: s.focus, targetYards: s.targetYards }; });
+        editSave.disabled = false;
+        closeEditPanel();
+        render();
+      })
+      .catch((err) => {
+        editSave.disabled = false;
+        showBanner(err.message || "Couldn't save — try again.");
+      });
   }
 
   if (editToggle) {
@@ -3454,30 +3117,20 @@ const WEEK_PLAN = [
     render();
   });
   render();
+  loadOverrides().then(render);
 })();
 </script>
 
 <script>
 /* Splash component: Meets
    Renders a month calendar with meet days marked, plus a list of
-   upcoming meets where a swimmer can request which events they'd
-   like to swim before entries close. A request here is an ask, not
-   the final entry — a coach still sets the lineup, but this gives
-   them a starting point instead of guessing.
-
-   Event requests are stored in localStorage under 'splash-meet-requests',
-   keyed by meet id. TODO(sync): replace readRequests()/writeRequests()
-   with calls to a real backend so a coach can see requests — the
-   rest of this file (calendar, rendering) doesn't need to change.
-   MEETS would also move from a hardcoded array to whatever the coach
-   or league publishes. */
-
-const MAX_EVENTS_PER_MEET = 4;
-
-const EVENT_POOL = [
-  '50 Free', '100 Free', '200 Free', '500 Free',
-  '100 Back', '100 Breast', '100 Fly', '200 IM',
-];
+   upcoming meets — name, date, location, and entry deadline. This is
+   deliberately read-only: event requests and volunteer sign-ups used
+   to live here too, but THPRD's new SwimTopia purchase already covers
+   both (Meet Entries/RSVPs and Volunteer Management), so The Cove
+   just points swimmers at when things are and leaves signing up to
+   SwimTopia. MEETS is fetched from the backend (loadMeetsFromBackend,
+   above), rather than hardcoded. */
 
 const SEASONS = ['Fall 2026', 'Previous Season'];
 
@@ -3526,24 +3179,6 @@ function seasonForMeetDate(dateStr) {
   const seasonToggleEl = document.getElementById('meetsSeasonToggle');
   if (!calGridEl || !listEl) return;
 
-  const REQ_KEY = 'splash-meet-requests';
-  const API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
-
-  function getCurrentUser() {
-    try { return JSON.parse(localStorage.getItem('splash-current-user') || 'null'); } catch (e) { return null; }
-  }
-  function getRole() {
-    const u = getCurrentUser();
-    return u ? u.role : null;
-  }
-  function api(path, options) {
-    return fetch(API_BASE + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options))
-      .then((res) => {
-        if (!res.ok) return res.json().catch(() => ({})).then((body) => { throw new Error(body.error || ('Request failed (' + res.status + ')')); });
-        return res.status === 204 ? null : res.json();
-      });
-  }
-
   let activeSeason = SEASONS[0];
 
   function currentMeets() {
@@ -3576,24 +3211,6 @@ function seasonForMeetDate(dateStr) {
         renderList();
       });
     });
-  }
-
-  // TODO(sync): replace with a real fetch to a backend endpoint.
-  function readRequests() {
-    try {
-      const raw = localStorage.getItem(REQ_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      return {};
-    }
-  }
-  // TODO(sync): replace with a real POST to a backend endpoint.
-  function writeRequests(reqs) {
-    try {
-      localStorage.setItem(REQ_KEY, JSON.stringify(reqs));
-    } catch (e) {
-      /* storage unavailable — request just won't persist */
-    }
   }
 
   function escapeHtml(str) {
@@ -3679,7 +3296,6 @@ function seasonForMeetDate(dateStr) {
   function renderList() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const requests = readRequests();
 
     listEl.innerHTML = '';
 
@@ -3692,11 +3308,9 @@ function seasonForMeetDate(dateStr) {
     upcoming.forEach((meet) => {
       const date = parseDate(meet.date);
       const status = deadlineStatus(meet, today);
-      const savedRequest = requests[meet.id];
-      const closed = status.key === 'closed';
 
       const card = document.createElement('article');
-      card.className = 'meet-card' + (savedRequest ? ' has-request' : '');
+      card.className = 'meet-card';
       card.id = 'meet-' + meet.id;
 
       card.innerHTML =
@@ -3709,213 +3323,10 @@ function seasonForMeetDate(dateStr) {
             '</div>' +
           '</div>' +
           '<span class="meet-card__deadline status-' + status.key + '">' + escapeHtml(status.label) + '</span>' +
-        '</div>' +
-        '<div class="meet-card__summary">Requested: <strong>' + (savedRequest ? escapeHtml(savedRequest.events.join(', ')) : '') + '</strong></div>' +
-        '<button type="button" class="meet-card__request-toggle"' + (closed ? ' disabled' : '') + '>' +
-          (closed ? 'Entries closed' : (savedRequest ? 'Edit your request' : 'Request your events')) +
-        '</button>' +
-        '<div class="meet-card__panel" hidden>' +
-          '<div class="meet-card__events"></div>' +
-          '<p class="meet-card__event-count"></p>' +
-          '<textarea class="meet-card__notes" placeholder="Anything else your coach should know (e.g. \'prefer relay over 500 free\')"></textarea>' +
-          '<button type="button" class="meet-card__submit">Submit request</button>' +
-        '</div>' +
-        '<div class="meet-card__volunteers">' +
-          '<div class="meet-card__volunteers-head">' +
-            '<h4>Volunteers Needed</h4>' +
-            '<button type="button" class="meet-card__add-role-toggle" hidden>+ Add role</button>' +
-          '</div>' +
-          '<div class="meet-card__role-form" hidden>' +
-            '<input type="text" class="volunteer-role-input" placeholder="Role (e.g. Timer)">' +
-            '<input type="number" min="1" value="1" class="volunteer-slots-input" placeholder="Spots">' +
-            '<input type="text" class="volunteer-notes-input" placeholder="Notes (optional)">' +
-            '<div class="meet-card__role-form-actions">' +
-              '<button type="button" class="volunteer-role-cancel">Cancel</button>' +
-              '<button type="button" class="volunteer-role-save">Add role</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="meet-card__roles-list"></div>' +
         '</div>';
-
-      renderVolunteers(card, meet);
-
-      const toggleBtn = card.querySelector('.meet-card__request-toggle');
-      const panel = card.querySelector('.meet-card__panel');
-      const eventsWrap = card.querySelector('.meet-card__events');
-      const countEl = card.querySelector('.meet-card__event-count');
-      const notesEl = card.querySelector('.meet-card__notes');
-      const submitBtn = card.querySelector('.meet-card__submit');
-
-      const selected = new Set(savedRequest ? savedRequest.events : []);
-      if (savedRequest && savedRequest.notes) notesEl.value = savedRequest.notes;
-
-      function renderEventChecks() {
-        eventsWrap.innerHTML = '';
-        EVENT_POOL.forEach((eventName) => {
-          const checked = selected.has(eventName);
-          const atLimit = selected.size >= MAX_EVENTS_PER_MEET && !checked;
-          const label = document.createElement('label');
-          label.className = 'meet-event-check' + (checked ? ' is-checked' : '') + (atLimit ? ' is-disabled' : '');
-          label.innerHTML =
-            '<input type="checkbox" ' + (checked ? 'checked' : '') + (atLimit ? ' disabled' : '') + '>' +
-            '<span>' + escapeHtml(eventName) + '</span>';
-          const input = label.querySelector('input');
-          input.addEventListener('change', () => {
-            if (input.checked) selected.add(eventName);
-            else selected.delete(eventName);
-            renderEventChecks();
-          });
-          eventsWrap.appendChild(label);
-        });
-        countEl.innerHTML = '<strong>' + selected.size + '</strong> of ' + MAX_EVENTS_PER_MEET + ' individual events selected';
-      }
-
-      if (!closed) {
-        toggleBtn.addEventListener('click', () => {
-          const isHidden = panel.hidden;
-          panel.hidden = !isHidden;
-          if (isHidden) renderEventChecks();
-        });
-
-        submitBtn.addEventListener('click', () => {
-          const currentReqs = readRequests();
-          currentReqs[meet.id] = {
-            events: Array.from(selected),
-            notes: notesEl.value.trim(),
-            submittedAt: new Date().toISOString(),
-          };
-          writeRequests(currentReqs);
-          renderList();
-        });
-      }
 
       listEl.appendChild(card);
     });
-  }
-
-  // ---- Volunteers: coaches post roles needed (timers, hospitality,
-  // concessions...), anyone signs up by name. Talks to the real
-  // backend directly — unlike event requests above, this needs to be
-  // visible to the whole team, not just the browser that made it. ----
-  function renderVolunteers(card, meet) {
-    const rolesListEl = card.querySelector('.meet-card__roles-list');
-    const addToggleBtn = card.querySelector('.meet-card__add-role-toggle');
-    const roleForm = card.querySelector('.meet-card__role-form');
-    const roleInput = card.querySelector('.volunteer-role-input');
-    const slotsInput = card.querySelector('.volunteer-slots-input');
-    const notesInput = card.querySelector('.volunteer-notes-input');
-    const roleCancelBtn = card.querySelector('.volunteer-role-cancel');
-    const roleSaveBtn = card.querySelector('.volunteer-role-save');
-
-    const isCoach = getRole() === 'coach';
-    const currentUser = getCurrentUser();
-    const myName = currentUser && currentUser.name ? currentUser.name.trim() : '';
-
-    addToggleBtn.hidden = !isCoach;
-
-    function loadAndRenderSlots() {
-      rolesListEl.innerHTML = '<p class="meet-card__roles-empty">Loading…</p>';
-      api('/api/meets/' + meet.id + '/volunteer-slots')
-        .then((slots) => {
-          if (slots.length === 0) {
-            rolesListEl.innerHTML = '<p class="meet-card__roles-empty">No volunteer roles posted yet' + (isCoach ? ' — add one above.' : '.') + '</p>';
-            return;
-          }
-          rolesListEl.innerHTML = slots.map((slot) => {
-            const filled = slot.signups.length;
-            const isFull = filled >= slot.slotsNeeded;
-            const mySignup = myName ? slot.signups.find((su) => su.name.trim().toLowerCase() === myName.toLowerCase()) : null;
-            const names = slot.signups.map((su) => escapeHtml(su.name)).join(', ');
-            return (
-              '<div class="volunteer-slot' + (isFull ? ' is-full' : '') + '" data-slot-id="' + slot.id + '">' +
-                '<div class="volunteer-slot__main">' +
-                  '<span class="volunteer-slot__role">' + escapeHtml(slot.role) + '</span>' +
-                  '<span class="volunteer-slot__count">' + filled + '/' + slot.slotsNeeded + ' filled' + (isFull ? ' <span class="volunteer-slot__full-tag">&#10003; Full</span>' : '') + '</span>' +
-                '</div>' +
-                (slot.notes ? '<p class="volunteer-slot__notes">' + escapeHtml(slot.notes) + '</p>' : '') +
-                (names ? '<p class="volunteer-slot__names">Signed up: ' + names + '</p>' : '') +
-                '<div class="volunteer-slot__actions">' +
-                  (mySignup
-                    ? '<button type="button" class="volunteer-slot__cancel" data-signup-id="' + mySignup.id + '">Cancel your signup</button>'
-                    : (isFull ? '' : '<button type="button" class="volunteer-slot__signup"' + (myName ? '' : ' disabled title="Sign in to volunteer"') + '>Sign up</button>')) +
-                  (isCoach ? '<button type="button" class="volunteer-slot__remove">Remove role</button>' : '') +
-                '</div>' +
-              '</div>'
-            );
-          }).join('');
-
-          rolesListEl.querySelectorAll('.volunteer-slot').forEach((slotEl) => {
-            const slotId = slotEl.getAttribute('data-slot-id');
-            const signupBtn = slotEl.querySelector('.volunteer-slot__signup');
-            const cancelBtn = slotEl.querySelector('.volunteer-slot__cancel');
-            const removeBtn = slotEl.querySelector('.volunteer-slot__remove');
-            if (signupBtn) {
-              signupBtn.addEventListener('click', () => {
-                if (!myName) return;
-                signupBtn.disabled = true;
-                api('/api/volunteer-slots/' + slotId + '/signup', { method: 'POST', body: JSON.stringify({ name: myName }) })
-                  .then(loadAndRenderSlots)
-                  .catch((err) => { alert(err.message); signupBtn.disabled = false; });
-              });
-            }
-            if (cancelBtn) {
-              cancelBtn.addEventListener('click', () => {
-                const signupId = cancelBtn.getAttribute('data-signup-id');
-                cancelBtn.disabled = true;
-                api('/api/volunteer-slots/' + slotId + '/signup/' + signupId, { method: 'DELETE' })
-                  .then(loadAndRenderSlots)
-                  .catch((err) => { alert(err.message); cancelBtn.disabled = false; });
-              });
-            }
-            if (removeBtn) {
-              removeBtn.addEventListener('click', () => {
-                if (!confirm('Remove this volunteer role and any signups for it?')) return;
-                api('/api/volunteer-slots/' + slotId, { method: 'DELETE' })
-                  .then(loadAndRenderSlots)
-                  .catch((err) => alert(err.message));
-              });
-            }
-          });
-        })
-        .catch(() => {
-          rolesListEl.innerHTML = '<p class="meet-card__roles-empty">Couldn’t load volunteer roles.</p>';
-        });
-    }
-
-    if (isCoach) {
-      addToggleBtn.addEventListener('click', () => {
-        roleForm.hidden = !roleForm.hidden;
-        if (!roleForm.hidden) roleInput.focus();
-      });
-      roleCancelBtn.addEventListener('click', () => {
-        roleForm.hidden = true;
-        roleInput.value = '';
-        slotsInput.value = '1';
-        notesInput.value = '';
-      });
-      roleSaveBtn.addEventListener('click', () => {
-        const role = roleInput.value.trim();
-        const slotsNeeded = parseInt(slotsInput.value, 10);
-        if (!role || !slotsNeeded || slotsNeeded < 1) {
-          roleInput.focus();
-          return;
-        }
-        roleSaveBtn.disabled = true;
-        api('/api/meets/' + meet.id + '/volunteer-slots', {
-          method: 'POST',
-          body: JSON.stringify({ role, slotsNeeded, notes: notesInput.value.trim() }),
-        }).then(() => {
-          roleForm.hidden = true;
-          roleInput.value = '';
-          slotsInput.value = '1';
-          notesInput.value = '';
-          roleSaveBtn.disabled = false;
-          loadAndRenderSlots();
-        }).catch((err) => { alert(err.message); roleSaveBtn.disabled = false; });
-      });
-    }
-
-    loadAndRenderSlots();
   }
 
   calPrevBtn.addEventListener('click', () => {
@@ -3937,7 +3348,6 @@ function seasonForMeetDate(dateStr) {
     renderCalendar();
     renderList();
   });
-  document.addEventListener('splash:user-ready', renderList);
 
   renderSeasonToggle();
   renderCalendar();
@@ -3952,7 +3362,12 @@ function seasonForMeetDate(dateStr) {
    Edit STROKE_VIDEOS to add, remove, or re-caption videos — each entry
    just needs a YouTube video id, a stroke category, a title, and a
    short coach note. Thumbnails are pulled directly from YouTube, no
-   API key required. */
+   API key required.
+
+   Unlike Meets, this one isn't getting trimmed for SwimTopia overlap —
+   SwimTopia doesn't do technique/coaching content at all, so this stays
+   exactly as-is. Fully static, no backend: nothing here needs syncing
+   across devices, since the video list is the same for everyone. */
 
 const STROKE_VIDEOS = [
   {
@@ -3973,8 +3388,8 @@ const STROKE_VIDEOS = [
     id: 'ZdKBXAoxoDE',
     stroke: 'freestyle',
     strokeLabel: 'Freestyle',
-    title: 'Freestyle Technique',
-    note: 'Coach pick — edit this title/note in stroke-library.js to match what the video actually covers.',
+    title: 'Freestyle Fundamentals: Full Stroke Breakdown',
+    note: 'A full walkthrough of the stroke, start to finish — good for reviewing the basics before drilling specific pieces on deck.',
   },
   {
     id: '8PkF7euQZBo',
@@ -4104,12 +3519,11 @@ const STROKE_VIDEOS = [
    regular practice, organized by season week (1-10) so a parent can
    look back through the season and see what was logged when.
 
-   Completion is logged in the browser's localStorage under
-   'splash-away-log', keyed by week + workout id. This is a
-   per-swimmer, per-device log for the prototype. To make it visible
-   to coaches and parents on other devices, swap the two functions
-   marked TODO(sync) below for calls to a real backend instead of
-   localStorage — the rest of this file doesn't need to change. */
+   Completion is logged to the real backend (/api/swimmers/:id/away-workouts),
+   keyed by week + workout id, same shape the API already used —
+   see loadLog/markDone below. Only meaningful for a signed-in swimmer
+   (via user.swimmerId); a parent or coach browsing this tab just sees
+   nothing marked done, since there's no single swimmer to log against. */
 
 const SEASON_WEEKS = 10;
 
@@ -4209,7 +3623,18 @@ const AWAY_WORKOUTS = [
   const statWeeksActive = document.getElementById('awayStatWeeksActive');
   if (!grid || !weeksStrip) return;
 
-  const LOG_KEY = 'splash-away-log';
+  const API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
+
+  function getCurrentUser() {
+    try { return JSON.parse(localStorage.getItem('splash-current-user') || 'null'); } catch (e) { return null; }
+  }
+  function api(path, options) {
+    return fetch(API_BASE + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options))
+      .then((res) => {
+        if (!res.ok) return res.json().catch(() => ({})).then((body) => { throw new Error(body.error || ('Request failed (' + res.status + ')')); });
+        return res.status === 204 ? null : res.json();
+      });
+  }
 
   function guessCurrentWeek() {
     const msPerWeek = 7 * 24 * 60 * 60 * 1000;
@@ -4221,28 +3646,27 @@ const AWAY_WORKOUTS = [
   let activeWeek = guessCurrentWeek();
   const currentWeek = activeWeek;
 
-  // TODO(sync): replace with a real fetch to a backend endpoint.
-  // Shape: { "3:pool-tuneup-30": "2026-09-18T00:00:00.000Z", ... }
-  function readLog() {
-    try {
-      const raw = localStorage.getItem(LOG_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      return {};
-    }
-  }
-
-  // TODO(sync): replace with a real POST to a backend endpoint.
-  function writeLog(log) {
-    try {
-      localStorage.setItem(LOG_KEY, JSON.stringify(log));
-    } catch (e) {
-      /* storage unavailable — completion just won't persist */
-    }
-  }
+  // Loaded from the backend for whichever swimmer is signed in — shaped
+  // the same way the old localStorage cache was so the rest of this file
+  // doesn't need to change: { "3:pool-tuneup-30": "2026-09-18T...", ... }
+  let log = {};
 
   function logKey(week, workoutId) {
     return week + ':' + workoutId;
+  }
+
+  function loadLog() {
+    const user = getCurrentUser();
+    if (!user || !user.swimmerId) {
+      log = {};
+      return Promise.resolve();
+    }
+    return api('/api/swimmers/' + user.swimmerId + '/away-workouts')
+      .then((entries) => {
+        log = {};
+        entries.forEach((e) => { log[logKey(e.week, e.workoutId)] = e.loggedAt; });
+      })
+      .catch(() => { /* backend unreachable — keep showing whatever was already cached */ });
   }
 
   function chevronIcon() {
@@ -4313,7 +3737,6 @@ const AWAY_WORKOUTS = [
   }
 
   function render(filter) {
-    const log = readLog();
     renderWeeksStrip(log);
     updateStats(log);
     grid.innerHTML = '';
@@ -4356,10 +3779,18 @@ const AWAY_WORKOUTS = [
 
       const doneBtn = card.querySelector('.away-card__done-btn');
       doneBtn.addEventListener('click', () => {
-        const currentLog = readLog();
-        currentLog[key] = new Date().toISOString();
-        writeLog(currentLog);
-        render(currentActiveFilter());
+        const user = getCurrentUser();
+        if (!user || !user.swimmerId) return;
+        doneBtn.disabled = true;
+        api('/api/swimmers/' + user.swimmerId + '/away-workouts', {
+          method: 'POST',
+          body: JSON.stringify({ week: activeWeek, workoutId: workout.id }),
+        })
+          .then((entry) => {
+            log[key] = entry.loggedAt;
+            render(currentActiveFilter());
+          })
+          .catch(() => { doneBtn.disabled = false; });
       });
 
       grid.appendChild(card);
@@ -4383,19 +3814,23 @@ const AWAY_WORKOUTS = [
     });
   });
 
+  document.addEventListener('splash:user-ready', () => {
+    loadLog().then(() => render(currentActiveFilter()));
+  });
+
   render('all');
+  loadLog().then(() => render(currentActiveFilter()));
 })();
 
 </script>
 
 <script>
 /* Splash component: Team Roster (coach only)
-   Unlike the other tabs (still localStorage-only, see their
-   TODO(sync) notes), this one talks to the real splash-backend
-   directly — a roster only means something if every coach/parent
-   device sees the same list, so there's no reasonable per-device
-   version of this feature. Requires the backend running locally
-   (see backend/README.md): node server.js, listening on API_BASE.
+   Talks to the real splash-backend directly — a roster only means
+   something if every coach/parent device sees the same list, so
+   there's no reasonable per-device version of this feature. Requires
+   the backend running locally (see backend/README.md): node server.js,
+   listening on API_BASE.
 */
 (function () {
   var API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
@@ -4878,17 +4313,9 @@ const AWAY_WORKOUTS = [
       coach: "What the team is swimming this week, day by day. Review what everyone's logged, or edit the plan below.",
       default: "What the team is swimming this week, day by day. Log your yardage after practice so your log matches what actually happened.",
     },
-    coachMessageSub: {
-      coach: 'Your note to the team, and how they can reach you.',
-      default: 'A note from your coach, and how to reach them.',
-    },
     trainingLogSub: {
       coach: "Every week the team has logged, most recent first — see how training has added up over time.",
       default: "Every week you've logged, most recent first — see how your training has added up over time.",
-    },
-    meetsSub: {
-      coach: 'When the next meets are, and where you can see which events your swimmers want to swim before entries close.',
-      default: "When the next meets are, and a place to tell your coach which events you'd like to swim before entries close.",
     },
     strokeLibrarySub: {
       coach: "Technique videos for the team to reference between practices — picked to reinforce what you're coaching.",
@@ -4913,119 +4340,6 @@ const AWAY_WORKOUTS = [
       el.textContent = isCoach ? copy.coach : copy.default;
     });
   });
-})();
-</script>
-
-<script>
-/* Splash component: Coach's Message
-   One team-wide note + contact email, editable by coaches, visible
-   to everyone. Like Team Roster and Team Media, this talks to the
-   real backend directly rather than localStorage — a message only
-   means something if every device sees the same one. Requires the
-   backend running locally (see backend/README.md).
-*/
-(function () {
-  var API_BASE = 'https://artistic-appreciation-production-ebcf.up.railway.app';
-  var CURRENT_USER_KEY = 'splash-current-user';
-
-  var banner = document.getElementById('coachMessageBanner');
-  var editToggle = document.getElementById('coachMessageEditToggle');
-  var editPanel = document.getElementById('coachMessageEditPanel');
-  var messageInput = document.getElementById('coachMessageInput');
-  var emailInput = document.getElementById('coachMessageEmailInput');
-  var cancelBtn = document.getElementById('coachMessageCancel');
-  var saveBtn = document.getElementById('coachMessageSave');
-  var textEl = document.getElementById('coachMessageText');
-  var emailLink = document.getElementById('coachMessageEmailLink');
-  var emailText = document.getElementById('coachMessageEmailText');
-  var metaEl = document.getElementById('coachMessageMeta');
-  if (!textEl) return;
-
-  function getUser() {
-    try { return JSON.parse(localStorage.getItem(CURRENT_USER_KEY) || 'null'); } catch (e) { return null; }
-  }
-
-  function showBanner(message, kind) {
-    if (!message) { banner.hidden = true; return; }
-    banner.textContent = message;
-    banner.className = 'coach-message__banner ' + (kind === 'ok' ? 'is-ok' : 'is-error');
-    banner.hidden = false;
-  }
-
-  function api(path, options) {
-    return fetch(API_BASE + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options))
-      .then(function (res) {
-        if (!res.ok) return res.json().catch(function () { return {}; }).then(function (body) {
-          throw new Error(body.error || ('Request failed (' + res.status + ')'));
-        });
-        if (res.status === 204) return null;
-        return res.json();
-      });
-  }
-
-  function render(data) {
-    if (data && data.message) {
-      textEl.textContent = data.message;
-      if (data.email) {
-        emailLink.href = 'mailto:' + data.email;
-        emailText.textContent = data.email;
-        emailLink.hidden = false;
-      } else {
-        emailLink.hidden = true;
-      }
-      metaEl.textContent = 'Last updated by ' + data.updatedByName + ' on ' +
-        new Date(data.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-      metaEl.hidden = false;
-    } else {
-      textEl.textContent = 'No message from the coach yet.';
-      emailLink.hidden = true;
-      metaEl.hidden = true;
-    }
-  }
-
-  function load() {
-    showBanner(null);
-    api('/api/coach-message').then(function (data) {
-      render(data);
-      messageInput.value = data ? data.message : '';
-      emailInput.value = (data && data.email) || '';
-    }).catch(function (err) {
-      showBanner("Couldn't reach the Splash backend (" + err.message + "). Make sure it's running: see backend/README.md.", 'error');
-    });
-  }
-
-  function openEditPanel() { editPanel.hidden = false; }
-  function closeEditPanel() { editPanel.hidden = true; }
-
-  if (editToggle) {
-    var user = getUser();
-    if (user && user.role === 'coach') {
-      editToggle.hidden = false;
-      editToggle.addEventListener('click', openEditPanel);
-    }
-  }
-  if (cancelBtn) cancelBtn.addEventListener('click', closeEditPanel);
-  if (saveBtn) {
-    saveBtn.addEventListener('click', function () {
-      var message = messageInput.value.trim();
-      if (!message) { messageInput.focus(); return; }
-      var currentUser = getUser();
-      api('/api/coach-message', {
-        method: 'PUT',
-        body: JSON.stringify({
-          message: message,
-          email: emailInput.value.trim(),
-          updatedByName: (currentUser && currentUser.name) || 'Coach',
-        }),
-      }).then(function (data) {
-        render(data);
-        closeEditPanel();
-        showBanner('Message updated.', 'ok');
-      }).catch(function (err) { showBanner(err.message, 'error'); });
-    });
-  }
-
-  load();
 })();
 </script>
 

@@ -13,15 +13,9 @@ const path = require('path');
 const usersRouter = require('./routes/users');
 const weekLogsRouter = require('./routes/weekLogs');
 const awayWorkoutsRouter = require('./routes/awayWorkouts');
-const {
-  router: meetsRouter,
-  swimmerRequests,
-  deleteVolunteerSlot,
-  volunteerSignup,
-  volunteerCancelSignup,
-} = require('./routes/meets');
+const { router: meetsRouter } = require('./routes/meets');
 const photosRouter = require('./routes/photos');
-const coachMessageRouter = require('./routes/coachMessage');
+const practicePlanRouter = require('./routes/practicePlan');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -43,13 +37,9 @@ app.get('/api/parent-links', (req, res) => res.json(db.all('parentLinks')));
 app.use('/api/users', usersRouter);
 app.use('/api', weekLogsRouter);      // /api/swimmers/:id/week-log
 app.use('/api', awayWorkoutsRouter);  // /api/swimmers/:id/away-workouts
-app.use('/api/meets', meetsRouter);   // /api/meets, /api/meets/:id/requests, /api/meets/:id/photos
-app.get('/api/swimmers/:id/meet-requests', swimmerRequests);
-app.delete('/api/volunteer-slots/:id', deleteVolunteerSlot);
-app.post('/api/volunteer-slots/:id/signup', volunteerSignup);
-app.delete('/api/volunteer-slots/:id/signup/:signupId', volunteerCancelSignup);
+app.use('/api/meets', meetsRouter);   // /api/meets, /api/meets/:id/photos
 app.use('/api/photos', photosRouter); // team-wide media gallery (practices + meets)
-app.use('/api/coach-message', coachMessageRouter);
+app.use('/api/practice-plan', practicePlanRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);
