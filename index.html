@@ -932,6 +932,7 @@ textarea:focus-visible {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
+  box-shadow: var(--shadow);
 }
 .week-team__row {
   display: flex;
@@ -1128,6 +1129,8 @@ textarea:focus-visible {
 .week-day__log {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 8px;
   justify-self: end;
 }
@@ -1158,6 +1161,18 @@ textarea:focus-visible {
   color: var(--good);
   border: 1px solid var(--good);
 }
+.week-day__undo-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.week-day__undo-btn:hover { border-color: var(--critical); color: var(--critical); }
 .week-day__logged-check {
   display: none;
   align-items: center;
@@ -1978,14 +1993,19 @@ textarea:focus-visible {
   color: #fff;
 }
 
-.training-log__weeks { display: flex; flex-direction: column; gap: 12px; }
-.training-week {
+.training-log__weeks {
   background: var(--paper-raised);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 16px 20px;
+  overflow: hidden;
   box-shadow: var(--shadow);
 }
+.training-log__weeks:empty { display: none; }
+.training-week {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.training-week:last-child { border-bottom: none; }
 .training-week__top {
   display: flex;
   align-items: center;
@@ -2014,7 +2034,7 @@ textarea:focus-visible {
 .training-week__day-dow { font-weight: 700; color: var(--primary-strong); }
 .training-week__day-yards { font-family: var(--font-mono); color: var(--ink-soft); }
 
-.training-week.is-current { border-color: var(--primary); }
+.training-week.is-current { background: var(--primary-tint); }
 .training-week__current-tag {
   font-size: 10px;
   font-weight: 700;
@@ -2765,6 +2785,20 @@ const WEEK_PLAN = [
     writeLocalLog(currentLog);
     return Promise.resolve();
   }
+  function deleteEntry(key) {
+    const user = getCurrentUser();
+    if (user && user.swimmerId) {
+      return api('/api/swimmers/' + user.swimmerId + '/week-log/' + key, { method: 'DELETE' })
+        .catch((err) => {
+          showBanner("Couldn't undo on the Splash backend (" + err.message + "). Try again once it's running.");
+          throw err;
+        });
+    }
+    const currentLog = readLocalLog();
+    delete currentLog[key];
+    writeLocalLog(currentLog);
+    return Promise.resolve();
+  }
 
   // Team-wide (not per-swimmer) overrides to the standing Tue/Wed
   // template, published by a coach via /api/practice-plan — loaded once
@@ -2854,6 +2888,7 @@ const WEEK_PLAN = [
           '<span class="week-day__logged-check">' + checkIcon() + '<span>' + (entry ? fmtNum(entry.yards) + ' yd' : '') + '</span></span>' +
           '<input type="number" min="0" step="50" inputmode="numeric" placeholder="yards" value="' + (entry ? entry.yards : '') + '" aria-label="Yards swum ' + escapeHtml(day.dow) + '">' +
           '<button type="button" class="week-day__log-btn">' + (entry ? 'Update' : 'Log') + '</button>' +
+          (entry ? '<button type="button" class="week-day__undo-btn">Undo</button>' : '') +
         '</div>';
 
       row.innerHTML =
@@ -2894,6 +2929,15 @@ const WEEK_PLAN = [
         btn.disabled = true;
         logEntry(key, val).then(render).catch(() => { btn.disabled = false; });
       });
+
+      const undoBtn = row.querySelector('.week-day__undo-btn');
+      if (undoBtn) {
+        undoBtn.addEventListener('click', () => {
+          if (!confirm('Undo the ' + fmtNum(entry.yards) + ' yards logged for ' + day.dow + '?')) return;
+          undoBtn.disabled = true;
+          deleteEntry(key).then(render).catch(() => { undoBtn.disabled = false; });
+        });
+      }
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') btn.click();
       });

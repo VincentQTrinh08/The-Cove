@@ -33,4 +33,14 @@ router.post('/swimmers/:id/week-log', (req, res) => {
   res.status(201).json(entry);
 });
 
+// DELETE /api/swimmers/:id/week-log/:date  (undo a logged day)
+router.delete('/swimmers/:id/week-log/:date', (req, res) => {
+  const swimmerId = Number(req.params.id);
+  const { date } = req.params;
+  const entry = db.find('weekLogs', (e) => e.swimmerId === swimmerId && e.date === date);
+  if (!entry) return res.status(404).json({ error: 'No logged entry for that date' });
+  db.remove('weekLogs', entry.id);
+  res.json({ ok: true });
+});
+
 module.exports = router;
