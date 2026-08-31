@@ -36,6 +36,12 @@
   --primary: #013765;
   --primary-strong: #01213d;
   --primary-tint: #dde6ee;
+  /* Sidebar/topbar chrome always stays THPRD navy — unlike
+     --primary-strong, this is never redefined in dark mode. Dark
+     mode flips --primary-strong to a pale blue for text contrast on
+     dark surfaces, which looks broken as a background fill: a
+     washed-out light bar floating in an otherwise dark page. */
+  --nav-surface: #01213d;
   --accent: #4c8c3b;
   --accent-ink: #12280d;
   --line: #ccd6da;
@@ -193,7 +199,7 @@ textarea:focus-visible {
   .sidebar {
     grid-column: 1;
     position: relative;
-    background: var(--primary-strong);
+    background: var(--nav-surface);
     color: #eef4f8;
     padding: 24px 20px;
     display: flex;
@@ -217,7 +223,7 @@ textarea:focus-visible {
   .sidebar-reopen {
     display: none;
     position: fixed; top: 18px; left: 18px; z-index: 40;
-    background: var(--primary-strong); color: #fff; border: none;
+    background: var(--nav-surface); color: #fff; border: none;
     width: 38px; height: 38px; border-radius: 8px; cursor: pointer;
     align-items: center; justify-content: center;
     box-shadow: var(--shadow);
@@ -286,7 +292,7 @@ textarea:focus-visible {
 
     .mobile-topbar {
       display: flex; align-items: center; gap: 12px;
-      background: var(--primary-strong); color: #fff;
+      background: var(--nav-surface); color: #fff;
       padding: 14px 18px;
       position: sticky; top: 0; z-index: 30;
     }
@@ -1672,7 +1678,7 @@ textarea:focus-visible {
   .signin-screen {
     position: fixed; inset: 0; z-index: 50;
     display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(160deg, var(--primary-strong), var(--primary) 65%);
+    background: linear-gradient(160deg, var(--nav-surface), var(--primary) 65%);
     padding: 24px;
   }
   #coveScreen {
@@ -1685,7 +1691,7 @@ textarea:focus-visible {
     text-align: center;
   }
   .signin-logo { width: 76px; height: 76px; margin: 0 auto 14px; display: block; }
-  .signin-title { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--primary-strong); margin-bottom: 2px; }
+  .signin-title { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--nav-surface); margin-bottom: 2px; }
   .signin-sub { font-size: 14px; color: #5b7185; margin-bottom: 22px; }
   .signin-field { text-align: left; margin-bottom: 14px; }
   .signin-field-row { display: flex; gap: 10px; }
@@ -1708,7 +1714,7 @@ textarea:focus-visible {
     background: #fff; font-family: inherit; font-size: 13.5px; font-weight: 600;
     color: #33465a; cursor: pointer;
   }
-  .signin-role.active { border-color: var(--primary); background: var(--primary-tint); color: var(--primary-strong); }
+  .signin-role.active { border-color: var(--primary); background: #dde6ee; color: var(--nav-surface); }
   .signin-submit {
     width: 100%; padding: 12px; border: none; border-radius: 8px;
     background: var(--primary); color: #fff; font-family: inherit; font-weight: 700;
