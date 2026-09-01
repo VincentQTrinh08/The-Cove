@@ -1585,7 +1585,14 @@ textarea:focus-visible {
 .roster-form__checks {
   display: flex;
   flex-wrap: wrap;
+  align-content: flex-start;
   gap: 8px;
+  max-height: 160px;
+  overflow-y: auto;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  padding: 9px;
+  background: var(--paper);
 }
 .roster-form__checks label {
   flex-direction: row;
